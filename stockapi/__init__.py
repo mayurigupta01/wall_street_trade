@@ -4,7 +4,7 @@ import os
 from flask_cors import CORS
 
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_login import LoginManager
 
 db = SQLAlchemy()
 
@@ -27,4 +27,20 @@ app.config[
     'postgresql://' + user + ':' + passw + '@' + dbhost + '/' + dbname
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+from .models import stockinfo, users
+
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(id):
+    # since the user_id is just the primary key of our user table, use it in the query for the user
+    return users.query.get(int(id))
+
+
+with app.app_context():
+    db.create_all()
+
 cors = CORS(app)

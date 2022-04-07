@@ -1,5 +1,8 @@
 from . import db
 
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+
 
 # create Table stockinfo
 class stockinfo(db.Model):
@@ -50,3 +53,23 @@ class stockinfo(db.Model):
         self.dividendYield = dividendYield
 
 
+class users(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    password = db.Column(db.String(15), nullable=False)
+    fn = db.Column(db.String(25), nullable=False)
+    ln = db.Column(db.String(25), nullable=False)
+    phone_no = db.Column(db.String(25), nullable=False, unique=True)
+    email = db.Column(db.String(25), nullable=False)
+
+    def __init__(self, password, fn, ln, phone_no, email):
+        self.password = password
+        self.fn = fn
+        self.ln = ln
+        self.phone_no = phone_no
+        self.email = email
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)

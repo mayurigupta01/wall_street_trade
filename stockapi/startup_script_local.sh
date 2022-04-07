@@ -4,7 +4,7 @@ export FLASK_APP="main.py"
 export FLASK_ENV="development"
 export LC_ALL=en_US.UTF8
 
-cd /code/wall-street-hero/stockapi
+cd /code/wall-street-trade/stockapi
 #PATH="/code/wall-street-hero/stockapi"
 touch ./cert.pem
 touch ./key.pem

@@ -1,4 +1,4 @@
-from stockapi.psqlhelper import close_connection
+
 from psycopg2.extras import RealDictCursor
 import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -109,3 +109,12 @@ def connect():
         print(error)
     finally:
         close_connection(conn, cur)
+
+
+def close_connection(conn, cur):
+    if cur is not None:
+        cur.close()
+        print('Cursor closed')
+    if conn is not None:
+        conn.close()
+        print('Database connection closed.')

@@ -1,23 +1,25 @@
+from aifc import Error
+
+
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
-from stockapi.models import stockinfo
-from sqlalchemy import inspect
-from sqlalchemy import create_engine
+from stockapi.models import stockinfo, users
+
 from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating
 from bs4 import BeautifulSoup
 from flask_login import (
     LoginManager,
     current_user,
-    login_required
+
 )
 from oauthlib.oauth2 import WebApplicationClient
 # Python standard libraries
 import json
-import os
+
 from stockapi.config import Config
 from stockapi import psqlprovider
-from stockapi.jwt_helper import decode_jwt_token, encode_jwt_token
+from stockapi.jwt_helper import  encode_jwt_token
 from stockapi.user import User
 import requests
 
@@ -36,9 +38,10 @@ client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 stock_api_blueprint = Blueprint("stockapi", __name__)
 
-engine = create_engine(
-    'postgresql://' + Config.db_username + ':' + Config.db_password + '@' + Config.db_host + '/' + Config.db_database)
-inspector = inspect(engine)
+
+# engine = create_engine(
+# 'postgresql://' + Config.db_username + ':' + Config.db_password + '@' + Config.db_host + '/' + Config.db_database)
+# inspector = inspect(engine)
 
 
 # add try and except
@@ -55,24 +58,39 @@ def get_home_page():
         return jsonify({"Message": "Home page is unreachable"}), 400
 
 
-# # Used for debugging only
-# @stock_api_blueprint.route("/")
-# def index():
-#     if current_user != None and current_user.is_authenticated:
-#         return (
-#             "<p>Hello, {}! You're logged in! Email: {}</p>"
-#             "<div><p>Google Profile Picture:</p>"
-#             '<img src="{}" alt="Google profile pic"></img></div>'
-#             '<a class="button" href="/logout">Logout</a>'.format(
-#                 current_user.name, current_user.email, current_user.profile_pic
-#             )
-#         )
-#     else:
-#         return '<a class="button" href="/google_login">Google Login</a>'
+@stock_api_blueprint.route("/user", methods=['POST'])
+def create_user():
+    json_data = request.get_json()
+    try:
+        fn = json_data['fn']
+        ln = json_data['ln']
+        password = json_data['password']
+        phone_no = json_data['phone_no']
+        email = json_data['email']
+        print(fn)
+        db_object = users(password=password, fn=fn, ln=ln, phone_no=phone_no, email=email)
+        db.session.add(db_object)
+        db.session.commit()
+        db.session.flush()
+    except Error as e:
+        return jsonify({"message": e.message}), 400
+    return jsonify({"message": "user Registration Successful"}), 200
 
-# Add stock summary to DB(internal call) just to add tickers to DB
 
-# implement a small functionality on UI for admins to enter the ticker and this call will enter the symbol to DB.
+@stock_api_blueprint.route("/login", methods=['POST'])
+def login():
+    json_data = request.get_json()
+    try:
+        username = json_data['username']
+        password = json_data['password']
+        db_object = users.query.filter_by(email=username).first()
+        if db_object is None or db_object.email != username or db_object.password != password:
+            return jsonify({"Unsuccessful Login": "Invalid user and password!"}), 400
+        else:
+            encoded_token = encode_jwt_token(db_object)
+            return jsonify({"access_token": encoded_token}), 200
+    except Error as e:
+        return jsonify({"access_token": e.__cause__}), 400
 
 
 @stock_api_blueprint.route('/add_ticker', methods=['GET', 'POST'])
@@ -91,15 +109,15 @@ def add_ticker():
                                  tickers.marketCap, tickers.fiftyTwoWeekHigh, tickers.fiftyTwoWeekLow,
                                  tickers.dividendYield)
         # adding data to stockinfo table
-        if inspector.has_table(stockinfo.__name__):
-            db.session.add(stock_object)
-            db.session.commit()
-            db.session.flush()
-        else:
-            db.create_all()
-            db.session.add(stock_object)
-            db.session.commit()
-            db.session.flush()
+        # if inspector.has_table(stockinfo.__name__):
+        db.session.add(stock_object)
+        db.session.commit()
+        db.session.flush()
+        # else:
+        # db.create_all()
+        # db.session.add(stock_object)
+        # db.session.commit()
+        # db.session.flush()
 
         return jsonify({"symbol": symbol,
                         "Message": "successfully added" + ' ' + symbol + ' ' + '.'
@@ -369,7 +387,7 @@ def callback():
 
         # // Get user from db
         user = psqlprovider.get_user(users_email)
-        if (user is not None):
+        if user is not None:
             user = User(user['email'], user['fn'], user['ln'], user['user_id'], user['role_id'])
             encoded_token = encode_jwt_token(user);
 
@@ -380,29 +398,8 @@ def callback():
         return "User email not available or not verified by Google.", 400
 
 
-def get_jwt_token(request):
-    authorization_header_value = request.headers.get('Authorization')
-    if (authorization_header_value != None):
-        jwt_token = authorization_header_value.split(" ")[1]
-        return jwt_token
-    else:
-        return None
 
 
-@login_manager.request_loader
-def load_user_from_request(request):
-    try:
-        jwt_token = get_jwt_token(request)
-        if (jwt_token != None):
-            payload = decode_jwt_token(jwt_token)
-
-            # Get user from db
-            user = psqlprovider.get_user(payload["email"])
-            user = User(user['email'], user['fn'], user['ln'], user['user_id'], user['role_id'])
-            return user
-    except os.error as e:
-        return None
-    return None
 
 
 @stock_api_blueprint.route("/current-user")
@@ -411,38 +408,6 @@ def get_current_user():
     return jsonify(user), 200
 
 
-@stock_api_blueprint.route("/ping")
-def ping():
-    return "Success", 200
-
-
-@stock_api_blueprint.route("/login", methods=['POST'])
-def login():
-    json_data = request.get_json()
-    print(json_data)
-    user = psqlprovider.verify_user(json_data["username"], json_data["password"])
-    if (user is not None):
-        user = User(user['email'], user['fn'], user['ln'], user['user_id'], user['role_id'])
-        encoded_token = encode_jwt_token(user);
-        return jsonify({"access_token": encoded_token}), 200
-
-    else:
-        return jsonify({"access_token": None}), 400
-
-
-@stock_api_blueprint.route("/ping-auth")
-@login_required
-def pingAuth():
-    return "message"
-
-
-@stock_api_blueprint.route("/user", methods=['POST'])
-def create_user():
-    json_data = request.get_json()
-    message = psqlprovider.add_user(json_data)
-    if (message == "Success"):
-        return jsonify({"message": message}), 200
-    return jsonify({"message": message.pgerror}), 400
 
 
 @stock_api_blueprint.route("/google_login")
@@ -493,9 +458,9 @@ def get_losers():
             response = response.json()
             for x in range(5):
                 losersDictionary.append({"stock": response["mostLoserStock"][x]["ticker"],
-                                          "price": response["mostLoserStock"][x]["price"],
-                                          "changes": response["mostLoserStock"][x]["changes"],
-                                          "changePercent": response["mostLoserStock"][x]["changesPercentage"]})
+                                         "price": response["mostLoserStock"][x]["price"],
+                                         "changes": response["mostLoserStock"][x]["changes"],
+                                         "changePercent": response["mostLoserStock"][x]["changesPercentage"]})
             return jsonify(losersDictionary), 200
         except:
             return jsonify({"Message": "Cannot retrieve top 5 losers at this time"}), 401
