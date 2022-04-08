@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from . import db
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -73,3 +75,47 @@ class users(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class users_account(db.Model):
+    account_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    symbol = db.Column(db.String(10), nullable=False)
+    cost_basis = db.Column(db.Numeric(12, 2), nullable=False)
+    purchase_date = db.Column(db.DateTime, nullable=False)
+    sell_date = db.Column(db.DateTime, nullable=True)
+    sell_price = db.Column(db.Numeric(12, 2), nullable=True)
+    total_balance = db.Column(db.Numeric(12, 2), nullable=True)
+    total_gain = db.Column(db.Numeric(12, 2), nullable=True)
+    total_loss = db.Column(db.Numeric(12, 2), nullable=True)
+
+    def __init__(self, user_id, symbol, cost_basis, purchase_date, sell_date, sell_price, total_balance, total_gain,
+                 total_loss):
+        self.user_id = user_id
+        self.symbol = symbol
+        self.cost_basis = cost_basis
+        self.purchase_date = purchase_date
+        self.sell_date = sell_date
+        self.sell_price = sell_price
+        self.total_balance = total_balance
+        self.total_gain = total_gain
+        self.total_loss = total_loss
+
+
+class user_credits(db.Model):
+    credit_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    credit_amount = db.Column(db.Numeric(12, 2), nullable=False)
+
+    def __init__(self, user_id, credit_amount):
+        self.user_id = user_id
+        self.credit_amount = credit_amount
+
+
+class credit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    amount = db.Column(db.Numeric(12, 2), nullable=False)
+
+    def __init__(self, amount):
+        self.amount = amount
+
