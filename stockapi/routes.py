@@ -1,10 +1,11 @@
 import decimal
 from aifc import Error
+from datetime import datetime
 
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
-from stockapi.models import stockinfo, users, credit, user_credits
+from stockapi.models import stockinfo, users, credit, user_credits, users_account
 
 from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating
 from bs4 import BeautifulSoup
@@ -596,7 +597,7 @@ def add_user_credits():
         return "Add credit to account", 200
 
 
-@stock_api_blueprint.route('/update_credits', methods=['POST', 'GET'])
+@stock_api_blueprint.route('/update_user_credits', methods=['POST', 'GET'])
 def update_amount():
     try:
         if request.method == 'POST':
@@ -614,3 +615,47 @@ def update_amount():
         return {"message": e.message}, 400
     else:
         return "Add credit to account", 200
+
+
+@stock_api_blueprint.route('/get_user_credits/<user_id>', methods=['GET'])
+def get_user_credits(user_id):
+    try:
+        db_object = user_credits.query.filter_by(user_id=user_id).first()
+        user_balance = db_object.credit_amount
+        return jsonify({"Available_balance": user_balance}), 200
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+# Trading backend calls
+@stock_api_blueprint.route('/buyStock', methods=['POST', 'GET'])
+def buy_symbol():
+    try:
+        if request.method == 'POST':
+            request_data = request.get_json()
+            user_id = request_data['user_id']
+            symbol = request_data['symbol']
+            quantity = request_data['quantity']
+            buy_price = request_data['buy_price']
+            # calculate balance
+            # get balance of the user from user_credits
+            credit_object = user_credits.query.filter_by(user_id=user_id).first()
+            available_balance = credit_object.credit_amount - (decimal.Decimal(buy_price))*quantity
+            user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
+                                        purchase_date=datetime.now(), sell_date=None, sell_price=None,
+                                        total_gain=None, total_loss=None)
+
+            #TODO: if symbol is same then add to the existing value in DB and sum the amount , calculate new cost basid
+            db.session.add(user_object)
+            db.session.commit()
+            db.session.flush()
+
+            # update the user_credits table.
+            credit_object.credit_amount = available_balance
+            db.session.commit()
+            return jsonify({"Stock": symbol,
+                            "Price": buy_price,
+                            "available_balance": available_balance,
+                            "Message": "Successful"}), 200
+    except Error as e:
+        return {"message": e.message}, 400
