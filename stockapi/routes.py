@@ -2,6 +2,8 @@ import decimal
 from aifc import Error
 from datetime import datetime
 
+from psycopg2._psycopg import Float
+
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
@@ -586,10 +588,15 @@ def add_user_credits():
             request_data = request.get_json()
             user_id = request_data['user_id']
             amount = request_data['amount']
-            db_object = user_credits(user_id, amount)
-            db.session.add(db_object)
-            db.session.commit()
-            db.session.flush()
+            db_object = user_credits.query.filter_by(user_id=user_id).first()
+            if db_object.user_id is None:
+                db_object = user_credits(user_id, amount)
+                db.session.add(db_object)
+                db.session.commit()
+                db.session.flush()
+            else:
+                db_object.credit_amount = db_object.credit_amount + amount
+                db.session.commit()
             return jsonify({"Message": "Account is credited successfully"})
     except Error as e:
         return {"message": e.message}, 400
@@ -640,16 +647,25 @@ def buy_symbol():
             # calculate balance
             # get balance of the user from user_credits
             credit_object = user_credits.query.filter_by(user_id=user_id).first()
-            available_balance = credit_object.credit_amount - (decimal.Decimal(buy_price))*quantity
-            user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
-                                        purchase_date=datetime.now(), sell_date=None, sell_price=None,
-                                        total_gain=None, total_loss=None)
-
-            #TODO: if symbol is same then add to the existing value in DB and sum the amount , calculate new cost basid
-            db.session.add(user_object)
-            db.session.commit()
-            db.session.flush()
-
+            available_balance = credit_object.credit_amount - (decimal.Decimal(buy_price)) * quantity
+            user_object = users_account.query.filter_by(symbol=symbol).first()
+            if user_object is None:
+                user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
+                                            purchase_date=datetime.now(), sell_date=None, sell_price=None,
+                                            total_gain=None, total_loss=None)
+                db.session.add(user_object)
+                db.session.commit()
+                db.session.flush()
+            else:
+                user_object.symbol = symbol
+                user_object.quantity = user_object.quantity + quantity
+                if buy_price > user_object.cost_basis:
+                    user_object.cost_basis = user_object.cost_basis + \
+                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                else:
+                    user_object.cost_basis = user_object.cost_basis - \
+                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                db.session.commit()
             # update the user_credits table.
             credit_object.credit_amount = available_balance
             db.session.commit()
