@@ -1,10 +1,13 @@
+import decimal
 from aifc import Error
+from datetime import datetime
 
+from psycopg2._psycopg import Float
 
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
-from stockapi.models import stockinfo, users
+from stockapi.models import stockinfo, users, credit, user_credits, users_account
 
 from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating, StockSummary
 from bs4 import BeautifulSoup
@@ -19,7 +22,7 @@ import json
 
 from stockapi.config import Config
 from stockapi import psqlprovider
-from stockapi.jwt_helper import  encode_jwt_token
+from stockapi.jwt_helper import encode_jwt_token
 from stockapi.user import User
 import requests
 
@@ -435,16 +438,10 @@ def callback():
         return "User email not available or not verified by Google.", 400
 
 
-
-
-
-
 @stock_api_blueprint.route("/current-user")
 def get_current_user():
     user = psqlprovider.get_user(current_user.get_id())
     return jsonify(user), 200
-
-
 
 
 @stock_api_blueprint.route("/google_login")
@@ -584,3 +581,133 @@ def get_reddit_mentions():
             return jsonify({"Message": "Cannot retrieve Reddit mentions at this time"}), 401
     else:
         return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+
+
+# user credits backend call
+@stock_api_blueprint.route('/add_credits', methods=['POST'])
+def add_credits():
+    try:
+        if request.method == 'POST':
+            request_data = request.get_json()
+            amount = request_data['amount']
+            db_object = credit(amount)
+            db.session.add(db_object)
+            db.session.commit()
+            db.session.flush()
+            return {"message": "credits added successfully"}, 200
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+@stock_api_blueprint.route('/show_credits', methods=['GET'])
+def show_credits():
+    amount_list = []
+    try:
+        credit_object = credit.query.all()
+        for amt in credit_object:
+            amount_list.append(amt.amount)
+        return json.dumps(amount_list, default=json_encode_decimal)
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+def json_encode_decimal(obj):
+    if isinstance(obj, decimal.Decimal):
+        return str(obj)
+    raise TypeError(repr(obj) + " is not JSON serializable")
+
+
+@stock_api_blueprint.route('/add_user_credits', methods=['POST', 'GET'])
+def add_user_credits():
+    try:
+        if request.method == 'POST':
+            request_data = request.get_json()
+            user_id = request_data['user_id']
+            amount = request_data['amount']
+            db_object = user_credits.query.filter_by(user_id=user_id).first()
+            if db_object.user_id is None:
+                db_object = user_credits(user_id, amount)
+                db.session.add(db_object)
+                db.session.commit()
+                db.session.flush()
+            else:
+                db_object.credit_amount = db_object.credit_amount + amount
+                db.session.commit()
+            return jsonify({"Message": "Account is credited successfully"})
+    except Error as e:
+        return {"message": e.message}, 400
+    else:
+        return "Add credit to account", 200
+
+
+@stock_api_blueprint.route('/update_user_credits', methods=['POST', 'GET'])
+def update_amount():
+    try:
+        if request.method == 'POST':
+            request_data = request.get_json()
+            user_id = request_data['user_id']
+            amount = request_data['amount']
+            db_object = user_credits.query.filter_by(user_id=user_id).first()
+            if db_object is None or db_object.user_id != user_id:
+                return jsonify({"Message": "Invalid user id"})
+            else:
+                db_object.credit_amount = db_object.credit_amount + amount
+                db.session.commit()
+            return jsonify({"Message": "Account is credited successfully with new amount"})
+    except Error as e:
+        return {"message": e.message}, 400
+    else:
+        return "Add credit to account", 200
+
+
+@stock_api_blueprint.route('/get_user_credits/<user_id>', methods=['GET'])
+def get_user_credits(user_id):
+    try:
+        db_object = user_credits.query.filter_by(user_id=user_id).first()
+        user_balance = db_object.credit_amount
+        return jsonify({"Available_balance": user_balance}), 200
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+# Trading backend calls
+@stock_api_blueprint.route('/buyStock', methods=['POST', 'GET'])
+def buy_symbol():
+    try:
+        if request.method == 'POST':
+            request_data = request.get_json()
+            user_id = request_data['user_id']
+            symbol = request_data['symbol']
+            quantity = request_data['quantity']
+            buy_price = request_data['buy_price']
+            # calculate balance
+            # get balance of the user from user_credits
+            credit_object = user_credits.query.filter_by(user_id=user_id).first()
+            available_balance = credit_object.credit_amount - (decimal.Decimal(buy_price)) * quantity
+            user_object = users_account.query.filter_by(symbol=symbol).first()
+            if user_object is None:
+                user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
+                                            purchase_date=datetime.now(), sell_date=None, sell_price=None,
+                                            total_gain=None, total_loss=None)
+                db.session.add(user_object)
+                db.session.commit()
+                db.session.flush()
+            else:
+                user_object.symbol = symbol
+                user_object.quantity = user_object.quantity + quantity
+                if buy_price > user_object.cost_basis:
+                    user_object.cost_basis = user_object.cost_basis + \
+                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                else:
+                    user_object.cost_basis = user_object.cost_basis - \
+                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                db.session.commit()
+            # update the user_credits table.
+            credit_object.credit_amount = available_balance
+            db.session.commit()
+            return jsonify({"Stock": symbol,
+                            "Price": buy_price,
+                            "available_balance": available_balance,
+                            "Message": "Successful"}), 200
+    except Error as e:
+        return {"message": e.message}, 400
