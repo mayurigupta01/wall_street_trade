@@ -6,7 +6,7 @@ from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
 from stockapi.models import stockinfo, users
 
-from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating
+from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating, StockSummary
 from bs4 import BeautifulSoup
 from flask_login import (
     LoginManager,
@@ -62,10 +62,11 @@ def get_home_page():
 def create_user():
     json_data = request.get_json()
     try:
-        fn = json_data['fn']
-        ln = json_data['ln']
+        print(json_data)
+        fn = json_data['first_name']
+        ln = json_data['last_name']
         password = json_data['password']
-        phone_no = json_data['phone_no']
+        phone_no = json_data['phone_number']
         email = json_data['email']
         print(fn)
         db_object = users(password=password, fn=fn, ln=ln, phone_no=phone_no, email=email)
@@ -179,6 +180,42 @@ def get_stock_info():
             return jsonify(my_dict), 200
         except:
             return jsonify({"Message": "Cannot retrieve stock info at this time"}), 401
+    else:
+        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+
+@stock_api_blueprint.route('/get-stock-summary', methods=['POST'])
+def get_stock_summary():
+    if request.method == 'POST':
+        try: 
+            symbol = request.get_json()
+            symbol = symbol['search'].upper()
+
+            url = Config.stockSummary_url
+            querystring = {"symbol":symbol,"region":"US"}
+            response = requests.request("GET", url, headers=Config.headers, params=querystring)
+            response1 = response.json()
+            #stockSummary = StockSummary.getStockSummary(response)
+
+            url = Config.stockRating_url + symbol + Config.FMP_apiKey
+            response = requests.request("GET", url)
+            response2 = response.json()
+            #stockRating = Rating.rating(response)
+
+            url = Config.recommendation_url
+            querystring = {"symbol": symbol}
+            response = requests.request("GET", url, headers=Config.headers, params=querystring)
+            response3 = response.json()
+
+            stockSummary = StockSummary.getStockSummary(response1, response2, response3)
+
+            """ payload = [
+                "stockSummary": stockSummary,
+                "stockRating": stockRating,
+                "similarStocks": similarStocks
+            ] """
+            return jsonify(stockSummary), 200
+        except:
+            return jsonify({"Message": "Cannot retrieve stock summary at this time"}), 401
     else:
         return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
 
