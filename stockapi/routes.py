@@ -589,7 +589,9 @@ def add_user_credits():
             user_id = request_data['user_id']
             amount = request_data['amount']
             db_object = user_credits.query.filter_by(user_id=user_id).first()
-            if db_object.user_id is None:
+            print(db_object)
+            if db_object is None:
+                print("adding user credits")
                 db_object = user_credits(user_id, amount)
                 db.session.add(db_object)
                 db.session.commit()
