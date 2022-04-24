@@ -19,6 +19,7 @@ class Config(object):
     marketHours_url = "https://financialmodelingprep.com/api/v3/is-the-market-open" + FMP_apiKey
     stockRating_url = "https://financialmodelingprep.com/api/v3/rating/"
     sectorPerformance_url = "https://financialmodelingprep.com/api/v3/stock/sectors-performance" + FMP_apiKey
+    stockSummary_url = "https://yh-finance.p.rapidapi.com/stock/v2/get-summary"
 
     headers = {
         'x-rapidapi-host': apihost,

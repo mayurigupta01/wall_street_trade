@@ -79,3 +79,28 @@ class Rating:
         stockRating = {"Symbol": response[0]["symbol"], "Grade": response[0]["rating"],
                        "Recommendation": response[0]["ratingRecommendation"]}
         return stockRating
+
+
+class StockSummary:
+    @staticmethod
+    def getStockSummary(response1, response2, response3):
+        stockSummary = {"Symbol": response1["symbol"],
+                        "Company": response1["price"]["shortName"],
+                        "Sector": response1["summaryProfile"]["sector"],
+                        "Business Summary": response1["summaryProfile"]["longBusinessSummary"],
+                        "Open": response1["summaryDetail"]["regularMarketOpen"]["raw"],
+                        "High": response1["summaryDetail"]["regularMarketDayHigh"]["raw"],
+                        "Low": response1["summaryDetail"]["regularMarketDayLow"]["raw"],
+                        "Market Cap": response1["summaryDetail"]["marketCap"]["fmt"],
+                        "52-Week High": response1["summaryDetail"]["fiftyTwoWeekHigh"]["raw"],
+                        "52-Week Low": response1["summaryDetail"]["fiftyTwoWeekLow"]["raw"],
+                        "Volume": response1["summaryDetail"]["regularMarketVolume"]["fmt"],
+
+                        "Grade": response2[0]["rating"],
+                        "Recommendation": response2[0]["ratingRecommendation"],
+
+                        "Similar Stock 1": (response3["finance"]["result"][0]["quotes"][0]["symbol"] + (" (") + response3["finance"]["result"][0]["quotes"][0]["shortName"] + (")")),
+                        "Similar Stock 2": (response3["finance"]["result"][0]["quotes"][1]["symbol"] + (" (") + response3["finance"]["result"][0]["quotes"][1]["shortName"] + (")")),
+                        "Similar Stock 3": (response3["finance"]["result"][0]["quotes"][2]["symbol"] + (" (") + response3["finance"]["result"][0]["quotes"][2]["shortName"] + (")"))
+                        }                     
+        return stockSummary

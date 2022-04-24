@@ -109,10 +109,12 @@ class Login extends Component {
       console.log("result", result);
       localStorage.setItem('isLoggedIn', JSON.stringify({
         isLoggedIn: true,
-        token:result.access_token
+        token:result.access_token,
+        uid: this.state.uname
       }))
       this.setState({
          isLoggedIn: true,
+         uid: this.state.uname
       })
     })
   })
@@ -138,10 +140,12 @@ class Login extends Component {
       console.log("result", result);
       localStorage.setItem('isLoggedIn', JSON.stringify({
         isLoggedIn: true,
-        token:result.access_token
+        token:result.access_token,
+        uid: this.state.uname
       }))
       this.setState({
          isLoggedIn: true,
+         uid: this.state.uname
       })
     })
   })
