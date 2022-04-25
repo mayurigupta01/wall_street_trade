@@ -49,8 +49,8 @@ pipeline {
          stage ('Deploy') {
         steps {
             sh 'whoami'
-            sh 'id'
-            sh 'scp deploy.sh ec2-user@10.0.12.58:/tmp'
+            sh 'sudo runuser -l ec2-user -c 'whoami''
+            sh 'sudo scp deploy.sh ec2-user@10.0.12.58:/tmp'
             sh 'ssh ec2-user@10.0.12.58 "chmod +x /tmp/deploy.sh"'
             sh 'ssh ec2-user@10.0.12.58 /tmp/deploy.sh'
         }
