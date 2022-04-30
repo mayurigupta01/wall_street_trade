@@ -91,8 +91,10 @@ def login():
         if db_object is None or db_object.email != username or db_object.password != password:
             return jsonify({"Unsuccessful Login": "Invalid user and password!"}), 400
         else:
+            user_exiting_id = db_object.id
             encoded_token = encode_jwt_token(db_object)
-            return jsonify({"access_token": encoded_token}), 200
+            return jsonify({"access_token": encoded_token,
+                            "user_id": user_exiting_id}), 200
     except Error as e:
         return jsonify({"access_token": e.__cause__}), 400
 
@@ -186,23 +188,24 @@ def get_stock_info():
     else:
         return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
 
+
 @stock_api_blueprint.route('/get-stock-summary', methods=['POST'])
 def get_stock_summary():
     if request.method == 'POST':
-        try: 
+        try:
             symbol = request.get_json()
             symbol = symbol['search'].upper()
 
             url = Config.stockSummary_url
-            querystring = {"symbol":symbol,"region":"US"}
+            querystring = {"symbol": symbol, "region": "US"}
             response = requests.request("GET", url, headers=Config.headers, params=querystring)
             response1 = response.json()
-            #stockSummary = StockSummary.getStockSummary(response)
+            # stockSummary = StockSummary.getStockSummary(response)
 
             url = Config.stockRating_url + symbol + Config.FMP_apiKey
             response = requests.request("GET", url)
             response2 = response.json()
-            #stockRating = Rating.rating(response)
+            # stockRating = Rating.rating(response)
 
             url = Config.recommendation_url
             querystring = {"symbol": symbol}
