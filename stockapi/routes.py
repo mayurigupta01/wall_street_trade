@@ -717,7 +717,7 @@ def buy_symbol():
 
 
 @stock_api_blueprint.route('/sellstock', methods=['POST', 'GET'])
-def buy_symbol():
+def sell_symbol():
     try:
         if request.method == 'POST':
             request_data = request.get_json()
@@ -731,13 +731,13 @@ def buy_symbol():
             available_balance = credit_object.credit_amount - (decimal.Decimal(sell_price)) * quantity
             user_object = users_account.query.filter_by(symbol=symbol).first()
             if user_object.quantity == quantity:
-                user_object.symbol = "null"
                 user_object.quantity = 0
-                user_object.cost_basis = 0
+                user_object.sell_date = datetime.now()
                 credit_object.credit_amount = available_balance
                 db.session.commit()
             else:
                 user_object.quantity = user_object.quantity - quantity
+                user_object.sell_date = datetime.now()
                 credit_object.credit_amount = available_balance
                 db.session.commit()
             return jsonify({"message": "sell is successfull",
@@ -745,5 +745,15 @@ def buy_symbol():
                             "available_balance": available_balance,
                             "quantity": quantity
                             }), 200
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+@stock_api_blueprint.route('/sellstock/<user_id>', methods=['GET'])
+def view_portfolio(user_id):
+    try:
+        user_object = users_account.query.filter_by(user_id=user_id).first()
+        # TODO - return the whole db object to dictionary.
+        return "Show portfolio"
     except Error as e:
         return {"message": e.message}, 400
