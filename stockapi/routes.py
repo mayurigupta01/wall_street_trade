@@ -749,7 +749,7 @@ def sell_symbol():
         return {"message": e.message}, 400
 
 
-@stock_api_blueprint.route('/sellstock/<user_id>', methods=['GET'])
+@stock_api_blueprint.route('/viewportfolio/<user_id>', methods=['GET'])
 def view_portfolio(user_id):
     try:
         user_object = users_account.query.filter_by(user_id=user_id).first()
