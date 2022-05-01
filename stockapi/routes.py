@@ -2,8 +2,6 @@ import decimal
 from aifc import Error
 from datetime import datetime
 
-from psycopg2._psycopg import Float
-
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
@@ -714,5 +712,38 @@ def buy_symbol():
                             "Price": buy_price,
                             "available_balance": available_balance,
                             "Message": "Successful"}), 200
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+@stock_api_blueprint.route('/sellstock', methods=['POST', 'GET'])
+def buy_symbol():
+    try:
+        if request.method == 'POST':
+            request_data = request.get_json()
+            user_id = request_data['user_id']
+            symbol = request_data['symbol']
+            quantity = request_data['quantity']
+            sell_price = request_data['sell_price']
+            # calculate balance
+            # get balance of the user from user_credits
+            credit_object = user_credits.query.filter_by(user_id=user_id).first()
+            available_balance = credit_object.credit_amount - (decimal.Decimal(sell_price)) * quantity
+            user_object = users_account.query.filter_by(symbol=symbol).first()
+            if user_object.quantity == quantity:
+                user_object.symbol = "null"
+                user_object.quantity = 0
+                user_object.cost_basis = 0
+                credit_object.credit_amount = available_balance
+                db.session.commit()
+            else:
+                user_object.quantity = user_object.quantity - quantity
+                credit_object.credit_amount = available_balance
+                db.session.commit()
+            return jsonify({"message": "sell is successfull",
+                            "symbol": symbol,
+                            "available_balance": available_balance,
+                            "quantity": quantity
+                            }), 200
     except Error as e:
         return {"message": e.message}, 400
