@@ -710,7 +710,7 @@ def buy_symbol():
             db.session.commit()
             return jsonify({"Stock": symbol,
                             "Price": buy_price,
-                            "available_balance": available_balance,
+                            "available_balance": str(available_balance),
                             "Message": "Successful"}), 200
     except Error as e:
         return {"message": e.message}, 400
