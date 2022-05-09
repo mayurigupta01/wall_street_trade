@@ -687,31 +687,36 @@ def buy_symbol():
             # get balance of the user from user_credits
             credit_object = user_credits.query.filter_by(user_id=user_id).first()
             available_balance = credit_object.credit_amount - (decimal.Decimal(buy_price)) * quantity
-            user_object = users_account.query.filter_by(symbol=symbol).first()
-            if user_object is None:
-                user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
-                                            purchase_date=datetime.now(), sell_date=None, sell_price=None,
-                                            total_gain=None, total_loss=None)
-                db.session.add(user_object)
-                db.session.commit()
-                db.session.flush()
+
+            # Check if user has enough balance to buy
+            if decimal.Decimal(buy_price) * quantity > available_balance:
+                return jsonify({"message": "not enough credits to buy , add credit"}), 401
             else:
-                user_object.symbol = symbol
-                user_object.quantity = user_object.quantity + quantity
-                if buy_price > user_object.cost_basis:
-                    user_object.cost_basis = user_object.cost_basis + \
-                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                user_object = users_account.query.filter_by(symbol=symbol).first()
+                if user_object is None:
+                    user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
+                                                purchase_date=datetime.now(), sell_date=None, sell_price=None,
+                                                total_gain=None, total_loss=None)
+                    db.session.add(user_object)
+                    db.session.commit()
+                    db.session.flush()
                 else:
-                    user_object.cost_basis = user_object.cost_basis - \
-                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                    user_object.symbol = symbol
+                    user_object.quantity = user_object.quantity + quantity
+                    if buy_price > user_object.cost_basis:
+                        user_object.cost_basis = user_object.cost_basis + \
+                                                 (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                    else:
+                        user_object.cost_basis = user_object.cost_basis - \
+                                                 (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                    db.session.commit()
+                # update the user_credits table.
+                credit_object.credit_amount = available_balance
                 db.session.commit()
-            # update the user_credits table.
-            credit_object.credit_amount = available_balance
-            db.session.commit()
-            return jsonify({"Stock": symbol,
-                            "Price": buy_price,
-                            "available_balance": str(available_balance),
-                            "Message": "Successful"}), 200
+                return jsonify({"Stock": symbol,
+                                "Price": buy_price,
+                                "available_balance": str(available_balance),
+                                "Message": "Successful"}), 200
     except Error as e:
         return {"message": e.message}, 400
 
