@@ -668,7 +668,7 @@ def get_user_credits(user_id):
     try:
         db_object = user_credits.query.filter_by(user_id=user_id).first()
         user_balance = db_object.credit_amount
-        return jsonify({"Available_balance": user_balance}), 200
+        return jsonify({"Available_balance": str(user_balance)}), 200
     except Error as e:
         return {"message": e.message}, 400
 
