@@ -20,7 +20,7 @@ aws autoscaling update-auto-scaling-group \
     --max-size 0 \
     --desired-capacity 0
 
-# Set ASG Desired capacity above to $WallStreetAppServerASG
+# Set ASG Desired capacity above to $WallStreet-WebServerAsg
 sleep 300
 echo "Setting the value to desired capacity again to MinSize $min_size MaxSize $max_size DesiredSize $desired_size"
 aws autoscaling update-auto-scaling-group \
