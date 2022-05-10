@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ASG_NAME="WallStreet-AppServerAsg"
+ASG_NAME="WallStreet-WebServerAsg"
 REGION="us-west-2"
 echo "Identifying ASG $ASG_NAME current capacity"
 desired_size=`aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name $ASG_NAME --region $REGION --query 'AutoScalingGroups[].[DesiredCapacity]' --output text`
