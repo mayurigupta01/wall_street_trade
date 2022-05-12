@@ -8,7 +8,7 @@ from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
 from stockapi.models import stockinfo, users, credit, user_credits, users_account
-
+from decimal import Decimal
 from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating
 from bs4 import BeautifulSoup
 from flask_login import (
@@ -404,6 +404,7 @@ def callback():
 @stock_api_blueprint.route("/current-user")
 def get_current_user():
     user = psqlprovider.get_user(current_user.get_id())
+    print("current user", user)
     return jsonify(user), 200
 
 
@@ -587,7 +588,9 @@ def add_user_credits():
         if request.method == 'POST':
             request_data = request.get_json()
             user_id = request_data['user_id']
+            print("userid", user_id)
             amount = request_data['amount']
+            print("amount", amount)
             db_object = user_credits.query.filter_by(user_id=user_id).first()
             if db_object.user_id is None:
                 db_object = user_credits(user_id, amount)
@@ -633,6 +636,24 @@ def get_user_credits(user_id):
     except Error as e:
         return {"message": e.message}, 400
 
+
+@stock_api_blueprint.route('/get_all_bought_stocks', methods=['POST'])
+def get_all_bought_stocks():
+    request_data = request.get_json()
+    users_email = request_data['user_email']
+    db_object = users.query.filter_by(email=users_email).first()
+    print("User id", db_object.id)
+    user_details = users_account.query.filter_by(user_id=db_object.id).all()
+    print("users account", len(user_details))
+    stockDetails = []
+    for user_detail in user_details:
+        stockDetails.append({"symbol": user_detail.symbol,
+                            "costBasis": user_detail.cost_basis,
+                             "quantity": user_detail.quantity,
+                             "purchaseDate": user_detail.purchase_date,
+                             "sellDate": user_detail.sell_date
+                             })
+    return json.dumps(stockDetails, indent=4, sort_keys=True, default=str)
 
 # Trading backend calls
 @stock_api_blueprint.route('/buyStock', methods=['POST', 'GET'])
