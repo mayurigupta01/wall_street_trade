@@ -1,12 +1,17 @@
 stockapi/__pycache__/*
 stockapi/venv/*
+.venv/
 stockapi/config_local.py
 client1/node_modules/*
 client1/package-lock.json
 venv/
+evne/
+.*
 
 stockapi/cert.pem
-stockapi/key.pem
+stockapi/key.pem	
 stockapi/test_container_required.json
 stockapi/startup_script_local.sh
-*.pyc
+
+.venv/Lib/site-packages/pip-21.1.1.dist-info/entry_points.txt
+.venv/Lib/

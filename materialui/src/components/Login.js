@@ -98,6 +98,7 @@ class Login extends Component {
       username: this.state.uname,
       password: this.state.pass,
     };
+    console.log(user);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -110,7 +111,7 @@ class Login extends Component {
       localStorage.setItem('isLoggedIn', JSON.stringify({
         isLoggedIn: true,
         token:result.access_token,
-        uid: this.state.uname
+        user_id:result.user_id, 
       }))
       this.setState({
          isLoggedIn: true,

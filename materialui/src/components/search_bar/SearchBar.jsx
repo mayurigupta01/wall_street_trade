@@ -10,11 +10,21 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import TextField from '@mui/material/TextField';
+import Buy from "../buy/Buy.js"
+import {withRouter} from '../withRouter';
+import { useDispatch, useSelector } from "react-redux";
+import { SetbuyStockSymbol, SetbuyStockPrice } from "../../redux/buyReducer";
+
+
+// materialui\src\components\buy\Buy.js
 
 const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
   padding: '8px',
 }));
+
+
 
 export const StyledSearchBar = styled(SearchBar)`
   margin: 0 auto;
@@ -36,14 +46,42 @@ const style = {
   fontSize: '16px'
 };
 
+// const btnStyle = { 
+//   position: 'relative';
+//     display: 'inline-block;
+//     padding: 5px 5px;
+//     color: black;
+//     font-size: 16px;
+//     text-decoration: none;
+//     text-transform: uppercase;
+//     overflow: hidden;
+//     transition: .5s;
+//     margin-top: 20px;
+//     letter-spacing: 4px;
+//     display: block
+// }
+
 class Searchbar extends Component {
   constructor(props) {
     super(props);
+    this.yourFunctionHere=this.yourFunctionHere.bind(this);
     this.state = {
       value: "",
       apidata: null,
-      showModal:false
+      showModal:false,     
     };
+  }
+// const dispatch = useDispatch();
+
+  yourFunctionHere()
+    {
+        // dispatch(SetbuyStockPrice(state.apidata)["Price"]);
+        // dispatch(SetbuyStockSymbol(state.apidata)["Symbol"]);
+        this.props.navigate('/buy')
+    }
+
+  handleBuy = () => {
+    
   }
   handleClose=()=>{
     console.log("Inside handle close");
@@ -69,12 +107,21 @@ class Searchbar extends Component {
   render() {
     return (
       <>
-      <SearchBar
+      {/* <TextField
+          id="standard-multiline-static"
+          label="Stock Symbol"
+          multiline
+          // rows={4}
+          defaultValue={this.state.value}
+          onChange={(newValue) => this.setState({ value: newValue })}
+          variant="standard"
+        /> */}
+      <SearchBar classname = "searchbar"
         value={this.state.value}
         onChange={(newValue) => this.setState({ value: newValue })}
         onRequestSearch={() => this.handleRequestSearch(this.state.value)}
       />
-      <Button variant="outlined"
+      <Button classname = "searchButton" variant="outlined"
         onClick={() => {this.handleRequestSearch(this.state.value)}}>Search</Button>
       <Modal
         open={this.state.showModal}
@@ -138,6 +185,13 @@ class Searchbar extends Component {
                 <Grid item xs={12}>
                   <Item><strong>Similar Stocks:</strong> {this.state.apidata["Similar Stock 1"]} - {this.state.apidata["Similar Stock 2"]} - {this.state.apidata["Similar Stock 3"]}</Item>
                 </Grid>
+                <Grid>
+                  <button 
+                onClick={this.yourFunctionHere}
+                >
+                  Buy
+                  </button>
+                  </Grid>                
               </Grid>
             </div>
             : <Typography style={{textAlign: "center", fontSize: "16px"}}> {(this.state.value).toUpperCase()}, is invalid or cannot be found! </Typography>
@@ -148,4 +202,4 @@ class Searchbar extends Component {
     );
   }
 }
-export default Searchbar;
+export default withRouter(Searchbar);
