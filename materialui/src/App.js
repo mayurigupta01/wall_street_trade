@@ -2,6 +2,7 @@ import './App.css';
 import Home from "./components/home/Home";
 import React from "react";
 import Login from "./components/Login";
+import Buy from "./components/buy/Buy";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Bot from './components/bot/Bot';
 
@@ -24,13 +25,14 @@ class App extends React.Component {
   return (
     <div>
     <Bot />
-    <Router>
+    {/* <Router> */}
       <Routes>
         <Route path="/" caseSensitive={false} element={<Login />} />
         <Route path="/login" caseSensitive={false} element={<Login />} />
         <Route path="/home" caseSensitive={false} element={<Home />} />
+        <Route path="/buy" caseSensitive={false} element={<Buy />} />
       </Routes>
-    </Router>
+    {/* </Router> */}
     </div>
   );
 }
