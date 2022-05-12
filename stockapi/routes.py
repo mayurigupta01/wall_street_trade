@@ -2,14 +2,13 @@ import decimal
 from aifc import Error
 from datetime import datetime
 
-from psycopg2._psycopg import Float
-
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
 from stockapi.models import stockinfo, users, credit, user_credits, users_account
 from decimal import Decimal
-from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating
+
+from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating, StockSummary
 from bs4 import BeautifulSoup
 from flask_login import (
     LoginManager,
@@ -65,10 +64,11 @@ def get_home_page():
 def create_user():
     json_data = request.get_json()
     try:
-        fn = json_data['fn']
-        ln = json_data['ln']
+        print(json_data)
+        fn = json_data['first_name']
+        ln = json_data['last_name']
         password = json_data['password']
-        phone_no = json_data['phone_no']
+        phone_no = json_data['phone_number']
         email = json_data['email']
         print(fn)
         db_object = users(password=password, fn=fn, ln=ln, phone_no=phone_no, email=email)
@@ -90,8 +90,10 @@ def login():
         if db_object is None or db_object.email != username or db_object.password != password:
             return jsonify({"Unsuccessful Login": "Invalid user and password!"}), 400
         else:
+            user_exiting_id = db_object.id
             encoded_token = encode_jwt_token(db_object)
-            return jsonify({"access_token": encoded_token}), 200
+            return jsonify({"access_token": encoded_token,
+                            "user_id": user_exiting_id}), 200
     except Error as e:
         return jsonify({"access_token": e.__cause__}), 400
 
@@ -182,6 +184,43 @@ def get_stock_info():
             return jsonify(my_dict), 200
         except:
             return jsonify({"Message": "Cannot retrieve stock info at this time"}), 401
+    else:
+        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+
+
+@stock_api_blueprint.route('/get-stock-summary', methods=['POST'])
+def get_stock_summary():
+    if request.method == 'POST':
+        try:
+            symbol = request.get_json()
+            symbol = symbol['search'].upper()
+
+            url = Config.stockSummary_url
+            querystring = {"symbol": symbol, "region": "US"}
+            response = requests.request("GET", url, headers=Config.headers, params=querystring)
+            response1 = response.json()
+            # stockSummary = StockSummary.getStockSummary(response)
+
+            url = Config.stockRating_url + symbol + Config.FMP_apiKey
+            response = requests.request("GET", url)
+            response2 = response.json()
+            # stockRating = Rating.rating(response)
+
+            url = Config.recommendation_url
+            querystring = {"symbol": symbol}
+            response = requests.request("GET", url, headers=Config.headers, params=querystring)
+            response3 = response.json()
+
+            stockSummary = StockSummary.getStockSummary(response1, response2, response3)
+
+            """ payload = [
+                "stockSummary": stockSummary,
+                "stockRating": stockRating,
+                "similarStocks": similarStocks
+            ] """
+            return jsonify(stockSummary), 200
+        except:
+            return jsonify({"Message": "Cannot retrieve stock summary at this time"}), 401
     else:
         return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
 
@@ -548,7 +587,6 @@ def get_reddit_mentions():
 
 
 # user credits backend call
-
 @stock_api_blueprint.route('/add_credits', methods=['POST'])
 def add_credits():
     try:
@@ -592,7 +630,9 @@ def add_user_credits():
             amount = request_data['amount']
             print("amount", amount)
             db_object = user_credits.query.filter_by(user_id=user_id).first()
-            if db_object.user_id is None:
+            print(db_object)
+            if db_object is None:
+                print("adding user credits")
                 db_object = user_credits(user_id, amount)
                 db.session.add(db_object)
                 db.session.commit()
@@ -632,7 +672,7 @@ def get_user_credits(user_id):
     try:
         db_object = user_credits.query.filter_by(user_id=user_id).first()
         user_balance = db_object.credit_amount
-        return jsonify({"Available_balance": user_balance}), 200
+        return jsonify({"Available_balance": str(user_balance)}), 200
     except Error as e:
         return {"message": e.message}, 400
 
@@ -669,30 +709,78 @@ def buy_symbol():
             # get balance of the user from user_credits
             credit_object = user_credits.query.filter_by(user_id=user_id).first()
             available_balance = credit_object.credit_amount - (decimal.Decimal(buy_price)) * quantity
-            user_object = users_account.query.filter_by(symbol=symbol).first()
-            if user_object is None:
-                user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
-                                            purchase_date=datetime.now(), sell_date=None, sell_price=None,
-                                            total_gain=None, total_loss=None)
-                db.session.add(user_object)
-                db.session.commit()
-                db.session.flush()
+
+            # Check if user has enough balance to buy
+            if decimal.Decimal(buy_price) * quantity > available_balance:
+                return jsonify({"message": "not enough credits to buy , add credit"}), 401
             else:
-                user_object.symbol = symbol
-                user_object.quantity = user_object.quantity + quantity
-                if buy_price > user_object.cost_basis:
-                    user_object.cost_basis = user_object.cost_basis + \
-                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                user_object = users_account.query.filter_by(symbol=symbol).first()
+                if user_object is None:
+                    user_object = users_account(user_id=user_id, symbol=symbol, quantity=quantity, cost_basis=buy_price,
+                                                purchase_date=datetime.now(), sell_date=None, sell_price=None,
+                                                total_gain=None, total_loss=None)
+                    db.session.add(user_object)
+                    db.session.commit()
+                    db.session.flush()
                 else:
-                    user_object.cost_basis = user_object.cost_basis - \
-                                             (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                    user_object.symbol = symbol
+                    user_object.quantity = user_object.quantity + quantity
+                    if buy_price > user_object.cost_basis:
+                        user_object.cost_basis = user_object.cost_basis + \
+                                                 (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                    else:
+                        user_object.cost_basis = user_object.cost_basis - \
+                                                 (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
+                    db.session.commit()
+                # update the user_credits table.
+                credit_object.credit_amount = available_balance
                 db.session.commit()
-            # update the user_credits table.
-            credit_object.credit_amount = available_balance
-            db.session.commit()
-            return jsonify({"Stock": symbol,
-                            "Price": buy_price,
+                return jsonify({"Stock": symbol,
+                                "Price": buy_price,
+                                "available_balance": str(available_balance),
+                                "Message": "Successful"}), 200
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+@stock_api_blueprint.route('/sellstock', methods=['POST', 'GET'])
+def sell_symbol():
+    try:
+        if request.method == 'POST':
+            request_data = request.get_json()
+            user_id = request_data['user_id']
+            symbol = request_data['symbol']
+            quantity = request_data['quantity']
+            sell_price = request_data['sell_price']
+            # calculate balance
+            # get balance of the user from user_credits
+            credit_object = user_credits.query.filter_by(user_id=user_id).first()
+            available_balance = credit_object.credit_amount - (decimal.Decimal(sell_price)) * quantity
+            user_object = users_account.query.filter_by(symbol=symbol).first()
+            if user_object.quantity == quantity:
+                user_object.quantity = 0
+                user_object.sell_date = datetime.now()
+                credit_object.credit_amount = available_balance
+                db.session.commit()
+            else:
+                user_object.quantity = user_object.quantity - quantity
+                user_object.sell_date = datetime.now()
+                credit_object.credit_amount = available_balance
+                db.session.commit()
+            return jsonify({"message": "sell is successfull",
+                            "symbol": symbol,
                             "available_balance": available_balance,
-                            "Message": "Successful"}), 200
+                            "quantity": quantity
+                            }), 200
+    except Error as e:
+        return {"message": e.message}, 400
+
+
+@stock_api_blueprint.route('/viewportfolio/<user_id>', methods=['GET'])
+def view_portfolio(user_id):
+    try:
+        user_object = users_account.query.filter_by(user_id=user_id).first()
+        # TODO - return the whole db object to dictionary.
+        return "Show portfolio"
     except Error as e:
         return {"message": e.message}, 400

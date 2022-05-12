@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 import os
 
@@ -5,7 +7,6 @@ from flask_cors import CORS
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-
 db = SQLAlchemy()
 
 app = Flask(__name__)
@@ -32,6 +33,7 @@ from .models import stockinfo, users
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
+
 
 
 @login_manager.user_loader

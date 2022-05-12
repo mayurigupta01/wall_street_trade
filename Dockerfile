@@ -1,7 +1,7 @@
 FROM centos:centos7
 
 ENV CODE_BASE_DIR="/code"
-ENV APP_NAME="wall-street-hero"
+ENV APP_NAME="wall-street-trade"
 ENV SERVICE_NAME="stockapi"
 
 USER root
@@ -37,12 +37,12 @@ COPY  stockapi/README.md "${CODE_BASE_DIR}"/"${APP_NAME}"/"${SERVICE_NAME}"/
 
 
 
-RUN ls -al /code/wall-street-hero/stockapi
+RUN ls -al /code/wall-street-trade/stockapi
 
 RUN cd "${CODE_BASE_DIR}"/"${APP_NAME}"/"${SERVICE_NAME}"/ &&\
     pip3 install -r requirements.txt &&\
     pip3 install yfinance --upgrade --no-cache-dir
 
-ENTRYPOINT ["/bin/bash","/code/wall-street-hero/stockapi/startup_script.sh"]
+ENTRYPOINT ["/bin/bash","/code/wall-street-trade/stockapi/startup_script_local.sh"]
 
 

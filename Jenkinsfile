@@ -46,6 +46,11 @@ pipeline {
                 deleteDir()
             }
         }
+         stage ('Deploy') {
+        steps {
+            sh '/var/lib/jenkins/deploy.sh'
+        }
+      }
     }
 }
 
