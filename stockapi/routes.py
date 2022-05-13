@@ -658,7 +658,7 @@ def update_amount():
             if db_object is None or db_object.user_id != user_id:
                 return jsonify({"Message": "Invalid user id"})
             else:
-                db_object.credit_amount = db_object.credit_amount + amount
+                db_object.credit_amount = db_object.credit_amount + decimal.Decimal(amount)
                 db.session.commit()
             return jsonify({"Message": "Account is credited successfully with new amount"})
     except Error as e:
@@ -677,13 +677,9 @@ def get_user_credits(user_id):
         return {"message": e.message}, 400
 
 
-@stock_api_blueprint.route('/get_all_bought_stocks', methods=['POST'])
-def get_all_bought_stocks():
-    request_data = request.get_json()
-    users_email = request_data['user_email']
-    db_object = users.query.filter_by(email=users_email).first()
-    print("User id", db_object.id)
-    user_details = users_account.query.filter_by(user_id=db_object.id).all()
+@stock_api_blueprint.route('/get_all_bought_stocks/<user_id>', methods=['GET'])
+def get_all_bought_stocks(user_id):
+    user_details = users_account.query.filter_by(user_id=user_id).all()
     print("users account", len(user_details))
     stockDetails = []
     for user_detail in user_details:
