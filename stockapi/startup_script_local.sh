@@ -13,4 +13,4 @@ cat ./test_container_required.json | jq -r '.ssl_cert' > ./cert.pem
 cat ./test_container_required.json | jq -r '.ssl_key' > ./key.pem
 chmod 400 ./cert.pem
 chmod 400 ./key.pem
-flask run --host=0.0.0.0 --port=443 --cert=cert.pem --key=key.pem
+flask run --host=0.0.0.0 --port=8443 --cert=cert.pem --key=key.pem

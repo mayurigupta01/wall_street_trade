@@ -1,6 +1,7 @@
 import decimal
 from aifc import Error
 from datetime import datetime
+from turtledemo.chaos import g
 
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
@@ -45,6 +46,7 @@ stock_api_blueprint = Blueprint("stockapi", __name__)
 # inspector = inspect(engine)
 
 
+
 # add try and except
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
@@ -74,6 +76,7 @@ def create_user():
         db.session.add(db_object)
         db.session.commit()
         db.session.flush()
+        shutdown_session()
     except Error as e:
         return jsonify({"message": e.message}), 400
     return jsonify({"message": "user Registration Successful"}), 200
@@ -91,6 +94,7 @@ def login():
         else:
             user_exiting_id = db_object.id
             encoded_token = encode_jwt_token(db_object)
+
             return jsonify({"access_token": encoded_token,
                             "user_id": user_exiting_id}), 200
     except Error as e:
@@ -101,7 +105,7 @@ def login():
 def add_ticker():
     if request.method == 'POST':
         # Read the symbol from the frontend app.(admin work)
-
+        shutdown_session()
         symbol = request.json['symbol']
         quote = yf.Ticker(symbol)
         tickers = Tickers(quote)
@@ -117,6 +121,7 @@ def add_ticker():
         db.session.add(stock_object)
         db.session.commit()
         db.session.flush()
+        shutdown_session()
         # else:
         # db.create_all()
         # db.session.add(stock_object)
@@ -158,6 +163,7 @@ def update_ticker():
             db_object.fiftyTwoWeekHigh = stock_object.fiftyTwoWeekHigh
             db_object.fiftyTwoWeekLow = stock_object.fiftyTwoWeekLow
             db.session.commit()
+            shutdown_session()
             return jsonify({"symbol": symbol,
                             "message": "Updated successfully" + ' ' + symbol + ' ' + '.'
                             }), 200
@@ -595,6 +601,7 @@ def add_credits():
             db.session.add(db_object)
             db.session.commit()
             db.session.flush()
+            shutdown_session()
             return {"message": "credits added successfully"}, 200
     except Error as e:
         return {"message": e.message}, 400
@@ -633,9 +640,11 @@ def add_user_credits():
                 db.session.add(db_object)
                 db.session.commit()
                 db.session.flush()
+                shutdown_session()
             else:
                 db_object.credit_amount = db_object.credit_amount + amount
                 db.session.commit()
+                shutdown_session()
             return jsonify({"Message": "Account is credited successfully"})
     except Error as e:
         return {"message": e.message}, 400
@@ -656,6 +665,7 @@ def update_amount():
             else:
                 db_object.credit_amount = db_object.credit_amount + amount
                 db.session.commit()
+                shutdown_session()
             return jsonify({"Message": "Account is credited successfully with new amount"})
     except Error as e:
         return {"message": e.message}, 400
@@ -700,6 +710,7 @@ def buy_symbol():
                     db.session.add(user_object)
                     db.session.commit()
                     db.session.flush()
+                    shutdown_session()
                 else:
                     user_object.symbol = symbol
                     user_object.quantity = user_object.quantity + quantity
@@ -710,9 +721,11 @@ def buy_symbol():
                         user_object.cost_basis = user_object.cost_basis - \
                                                  (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
                     db.session.commit()
+                    shutdown_session()
                 # update the user_credits table.
                 credit_object.credit_amount = available_balance
                 db.session.commit()
+                shutdown_session()
                 return jsonify({"Stock": symbol,
                                 "Price": buy_price,
                                 "available_balance": str(available_balance),
@@ -740,11 +753,13 @@ def sell_symbol():
                 user_object.sell_date = datetime.now()
                 credit_object.credit_amount = available_balance
                 db.session.commit()
+                shutdown_session()
             else:
                 user_object.quantity = user_object.quantity - quantity
                 user_object.sell_date = datetime.now()
                 credit_object.credit_amount = available_balance
                 db.session.commit()
+                shutdown_session()
             return jsonify({"message": "sell is successfull",
                             "symbol": symbol,
                             "available_balance": available_balance,
@@ -762,3 +777,8 @@ def view_portfolio(user_id):
         return "Show portfolio"
     except Error as e:
         return {"message": e.message}, 400
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
