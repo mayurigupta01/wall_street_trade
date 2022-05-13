@@ -27,7 +27,9 @@ class Gainers extends Component {
     let items = [...this.state.gainersData];
     if (this.state.gainersData.length > 0) {
       return (
-        <div style={{ height: 350, width: '33%', padding: 20 }}>
+        // <div style={{ height: 350, width: '33%', padding: 20 }}>
+        <div style={{ width: '33%', padding: 20 }}>
+
           <span className="featuredTitle">Top Gainers</span>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 130 }} aria-label="simple table">

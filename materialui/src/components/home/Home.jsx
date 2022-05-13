@@ -10,8 +10,31 @@ import MarketHours from "../marketHours/marketHours";
 import ShowCredits from "../showCredits/showCredits";
 import Buy from "../buy/Buy";
 import StockDetails from "../stockDetails/stockDetails";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { CssBaseline } from "@material-ui/core/styles";
+
+
 
 export default function Home() {
+
+  const theme = createMuiTheme({
+    overrides: {
+      MuiCssBaseline: {
+        "@global": {
+          "*::-webkit-scrollbar": {
+            width: "10px"
+          },
+          "*::-webkit-scrollbar-track": {
+            background: "#E4EFEF"
+          },
+          "*::-webkit-scrollbar-thumb": {
+            background: "#1D388F61",
+            borderRadius: "2px"
+          }
+        }
+      }
+    }
+  });
   return (
     <div className="home">
       <div>
@@ -21,12 +44,14 @@ export default function Home() {
       <Buy />
       <News />
       <div className="topNTables">
+      <ThemeProvider theme={theme}>
         <Gainers />
         <Losers />
         <SectorPerformance />
+        <RedditMentions />
+        </ThemeProvider>
       </div>
       <div className="topNTables">
-        <RedditMentions />
         <TrendingTickers />
         <StockDetails /> 
       </div>

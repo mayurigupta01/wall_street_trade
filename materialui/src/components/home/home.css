@@ -1,10 +1,17 @@
-.home{
-    flex: 4 ;
-}
+/* .home{
+    /* flex: 4  */
+
+/* }  */
 
 .topNTables{
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
     padding-bottom: 20px;
     margin-bottom: 20px;
+    height: 440px;
+    width: 25%;
+    overflow: auto;
+    float: right;
+    position: relative;
+    margin-left: -5px;
 }
