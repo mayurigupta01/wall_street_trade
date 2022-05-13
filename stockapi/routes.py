@@ -731,7 +731,6 @@ def buy_symbol():
                     db.session.add(user_object)
                     db.session.commit()
                     db.session.flush()
-                    shutdown_session()
                 else:
                     user_object.symbol = symbol
                     user_object.quantity = user_object.quantity + quantity
@@ -742,7 +741,6 @@ def buy_symbol():
                         user_object.cost_basis = user_object.cost_basis - \
                                                  (decimal.Decimal(buy_price)) * decimal.Decimal('0.10')
                     db.session.commit()
-                    shutdown_session()
                 # update the user_credits table.
                 credit_object.credit_amount = available_balance
                 db.session.commit()
@@ -798,7 +796,7 @@ def sell_symbol():
                 shutdown_session()
             return jsonify({"message": "sell is successful",
                             "symbol": symbol,
-                            "available_balance": available_balance,
+                            "available_balance": str(available_balance),
                             "quantity": quantity
                             }), 200
     except Error as e:
