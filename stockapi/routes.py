@@ -687,7 +687,10 @@ def get_all_bought_stocks(user_id):
                             "costBasis": user_detail.cost_basis,
                              "quantity": user_detail.quantity,
                              "purchaseDate": user_detail.purchase_date,
-                             "sellDate": user_detail.sell_date
+                             "sellDate": user_detail.sell_date,
+                             "sellPrice":user_detail.sell_price,
+                             "totalGain":user_detail.total_gain,
+                             "totalLoss":user_detail.total_loss
                              })
     return json.dumps(stockDetails, indent=4, sort_keys=True, default=str)
 

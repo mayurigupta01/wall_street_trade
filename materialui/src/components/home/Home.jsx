@@ -28,7 +28,6 @@ export default function Home() {
       <div className="topNTables">
         <RedditMentions />
         <TrendingTickers />
-        {/* <ShowCredits /> */}
         <StockDetails /> 
       </div>
     </div>

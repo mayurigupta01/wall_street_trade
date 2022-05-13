@@ -43,6 +43,7 @@ user_id = this.user_data.user_id;
   }
 
   getUserCredits=()=>{
+    console.log("get user--->")
     const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -51,10 +52,13 @@ user_id = this.user_data.user_id;
     fetch(`/get_user_credits/` + this.user_id, { requestOptions }).then(
       (response) => {
         response.json().then((res) => {
-          this.state.availableBalance = res.Available_balance;
+          this.setState({availableBalance:res.Available_balance})
+          //this.state.availableBalance = res.Available_balance;
+          console.log("api-->data", res.Available_balance);
         });
       }
     );
+    
   }
 
   handleClose=()=>{
@@ -81,14 +85,15 @@ user_id = this.user_data.user_id;
       response.json().then(res=>{
           this.setState({ addapidata: res?res:[] });
           console.log("addapidata", res);
-          this.getUserCredits();
-          document.getElementById('balance').innerHTML = "$"+ this.state.availableBalance;
       })
     });
     alert("Credits added successfully!");
+    this.getUserCredits();
+    //document.getElementById('balance').innerHTML = "$"+ this.state.availableBalance;
   }
 
   update = () => {
+    console.log("update--->")
     let param = {
       user_id: this.user_id,
       amount: this.state.selectedValue
@@ -101,12 +106,13 @@ user_id = this.user_data.user_id;
     fetch("/update_user_credits", requestOptions).then((response) => {
       response.json().then(res=>{
           this.setState({ updateapidata: res?res:[] });
-          console.log("updateapidata" , res);
+          console.log("updateapidata---->" , res);
           this.getUserCredits();
-          document.getElementById('balance').innerHTML = "$"+ this.state.availableBalance;
       })
     });
-    alert("Credits updated successfully!");
+   // alert("Credits updated successfully!");
+    
+    //document.getElementById('balance').innerHTML = "$"+ this.state.availableBalance;
   }    
 
   handleCreditChange = (event) => { 
@@ -132,6 +138,7 @@ user_id = this.user_data.user_id;
   
     console.log(this.state.creditsData);
     console.log(this.state.availableBalance);
+    this.state.creditsData = this.state.creditsData.sort((a,b)=> a-b);
     const credits = [...this.state.creditsData];
   //   var creditsList = Object.keys(credits).map((k) => {
 	// 	return (

@@ -51,6 +51,9 @@ class StockDetails extends Component {
                     <TableCell style={{fontWeight: 'bold', fontSize: '18px'}}>Quantity</TableCell>
                     <TableCell style={{fontWeight: 'bold', fontSize: '18px'}}>Purchase Date</TableCell>
                     <TableCell style={{fontWeight: 'bold', fontSize: '18px'}}>Sell Date</TableCell>
+                    <TableCell style={{fontWeight: 'bold', fontSize: '18px'}}>Sell Price</TableCell>
+                    <TableCell style={{fontWeight: 'bold', fontSize: '18px'}}>Total Gain</TableCell>
+                    <TableCell style={{fontWeight: 'bold', fontSize: '18px'}}>Total Loss</TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>
