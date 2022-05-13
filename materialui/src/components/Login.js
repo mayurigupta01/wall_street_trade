@@ -15,6 +15,9 @@ class Login extends Component {
       lastName: "",
       store: null,
       pass2: "",
+      isError: false,
+      result: null,
+      response: null,
     };
     this.handleSubmitLogin = this.handleSubmitLogin.bind(this);
     this.handleSubmitSignUp = this.handleSubmitSignUp.bind(this);
@@ -98,26 +101,82 @@ class Login extends Component {
       username: this.state.uname,
       password: this.state.pass,
     };
+    console.log(user);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
     };
     fetch("/login", requestOptions)
+
     .then((response)=>{
-      response.json().then((result)=>{
-      console.log("result", result);
-      localStorage.setItem('isLoggedIn', JSON.stringify({
-        isLoggedIn: true,
-        token:result.access_token,
-        uid: this.state.uname
-      }))
       this.setState({
-         isLoggedIn: true,
-         uid: this.state.uname
+        response: response.status,
+      })
+
+      console.log(response);
+      console.log(response.status);
+      // console.log("response", response.status);
+    //     response.json().then((result)=>{
+    //     console.log("result", result);
+    //     console.log("respose", this.state.response);
+    //     this.setState({
+    //       result: result,
+    //   })
+    // })
+
+    // if (this.state.result && this.state.response === 200) {
+    if (response && response.status === 200) {
+
+      console.log("inside 200 if");
+
+      response.json().then((result)=>{
+        console.log("result", result);
+        console.log("respose", this.state.response);
+        this.setState({
+          result: result,
       })
     })
+
+      localStorage.setItem('isLoggedIn', JSON.stringify({
+            isLoggedIn: true,
+            token:this.state.result.access_token,
+            user_id:this.state.result.user_id,
+      }))
+
+      this.setState({
+        isLoggedIn: true,
+        uid: this.state.uname
+     })
+    }
+    else {
+      console.log("inside else")
+      localStorage.setItem('isLoggedIn', JSON.stringify({
+        isLoggedIn: false,
+        
+      }))
+    }
   })
+
+    console.log("Login:", this.state.isLoggedIn)
+    // .then((response)=>{
+    //   response.json().then((result)=>{
+    //   console.log("result", result);
+      
+      // result.accessToken ?
+      //    (localStorage.setItem('isLoggedIn', JSON.stringify({
+      //     isLoggedIn: true,
+      //     token:result.access_token,
+      //     user_id:result.user_id,
+      //   })))
+      //     :
+      //     (localStorage.setItem('isLoggedIn', JSON.stringify({
+      //       isLoggedIn: false,
+      //     })))
+
+
+  //   })
+  // })
   }
 
   async handleSubmitSignUp() {
@@ -152,7 +211,8 @@ class Login extends Component {
 }
 
   render() {
-    const isLoggedIn = this.state.isLoggedIn;
+    const isLoggedIn = localStorage.getItem("isLoggedIn")
+    // console.log("inside render", isLoggedIn)
     const isSignUpClicked = this.state.signUp;
 
     return (
@@ -319,6 +379,7 @@ class Login extends Component {
             )}
           </div>
         )}
+      {/* <p>Wrong Email or Password</p> */}
       </div>
     );
   }

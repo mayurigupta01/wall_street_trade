@@ -8,7 +8,7 @@ class Config(object):
     url = "https://yh-finance.p.rapidapi.com/market/get-trending-tickers"
     apihost = 'yh-finance.p.rapidapi.com'
     apikey = 'fd1576efc5msh7bb1970e4c028cdp1406ccjsn31facdab9c57'
-    FMP_apiKey = "?apikey=20f6b9477a4df6684cb7a71ee4e80274"
+    FMP_apiKey = "?apikey=4a57a180719691e641b931e083a0d92d"
     news_url = "https://yh-finance.p.rapidapi.com/news/v2/get-details"
     post_news_url = "https://yh-finance.p.rapidapi.com/news/v2/list"
     recommendation_url = "https://yh-finance.p.rapidapi.com/stock/v2/get-recommendations"

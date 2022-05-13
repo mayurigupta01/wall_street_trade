@@ -1,0 +1,33 @@
+/* .buyButton Button */
+
+/* .buyButton{
+    position: relative;
+    display: inline-block;
+    padding: 5px 5px;
+    color: black;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 20px;
+    letter-spacing: 4px;
+    display: block;
+} */
+
+p{
+font-size: initial;
+}
+.Ptext p{
+align-items: center;
+font-size: initial;
+}
+
+.Search{
+    align-items: center;
+    /* align-items: center; */
+    /* flex: initial; */
+    display: flex;
+    padding: 20px;
+    justify-content: center;
+}
