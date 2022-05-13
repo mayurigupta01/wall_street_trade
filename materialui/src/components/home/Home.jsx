@@ -10,7 +10,6 @@ import MarketHours from "../marketHours/marketHours";
 import ShowCredits from "../showCredits/showCredits";
 import Buy from "../buy/Buy";
 import StockDetails from "../stockDetails/stockDetails";
-// >>>>>>> aac2ee89ea4d5fbe195185ca1e163931bf78ee13
 
 export default function Home() {
   return (
@@ -29,7 +28,6 @@ export default function Home() {
       <div className="topNTables">
         <RedditMentions />
         <TrendingTickers />
-        <ShowCredits />
         <StockDetails /> 
       </div>
     </div>
