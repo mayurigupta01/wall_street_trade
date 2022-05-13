@@ -1,13 +1,11 @@
 import decimal
 from aifc import Error
 from datetime import datetime
-from turtledemo.chaos import g
 
 from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
 from stockapi.models import stockinfo, users, credit, user_credits, users_account
-from decimal import Decimal
 
 from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating, StockSummary
 from bs4 import BeautifulSoup
@@ -45,7 +43,6 @@ stock_api_blueprint = Blueprint("stockapi", __name__)
 # engine = create_engine(
 # 'postgresql://' + Config.db_username + ':' + Config.db_password + '@' + Config.db_host + '/' + Config.db_database)
 # inspector = inspect(engine)
-
 
 
 # add try and except
@@ -311,6 +308,7 @@ def get_news():
             querystring = {"uuid": uuid, "region": "US"}
             response = requests.request("GET", url, headers=Config.headers, params=querystring)
             data = response.json()
+            print(data)
             for item in data["data"]["contents"]:
                 if item["content"]["clickThroughUrl"] is None:
                     clickThrough = item["content"]["canonicalUrl"]["url"]
@@ -698,12 +696,13 @@ def get_all_bought_stocks():
     stockDetails = []
     for user_detail in user_details:
         stockDetails.append({"symbol": user_detail.symbol,
-                            "costBasis": user_detail.cost_basis,
+                             "costBasis": user_detail.cost_basis,
                              "quantity": user_detail.quantity,
                              "purchaseDate": user_detail.purchase_date,
                              "sellDate": user_detail.sell_date
                              })
     return json.dumps(stockDetails, indent=4, sort_keys=True, default=str)
+
 
 # Trading backend calls
 @stock_api_blueprint.route('/buyStock', methods=['POST', 'GET'])
@@ -773,16 +772,31 @@ def sell_symbol():
             if user_object.quantity == quantity:
                 user_object.quantity = 0
                 user_object.sell_date = datetime.now()
+                user_object.sell_price = sell_price
                 credit_object.credit_amount = available_balance
+                diff = quantity * (decimal.Decimal(sell_price)) - quantity * user_object.cost_basis
+                if diff > 0:
+                    user_object.total_gain = diff
+                else:
+                    user_object.total_loss = quantity * user_object.cost_basis - quantity * (
+                        decimal.Decimal(sell_price))
                 db.session.commit()
-                shutdown_session()
+
             else:
+                diff1 = quantity * (decimal.Decimal(sell_price)) - quantity * user_object.cost_basis
+                if diff1 > 0:
+                    user_object.total_gain = diff1
+                else:
+                    user_object.total_loss = quantity * user_object.cost_basis - quantity * (
+                        decimal.Decimal(sell_price))
+                db.session.commit()
                 user_object.quantity = user_object.quantity - quantity
                 user_object.sell_date = datetime.now()
                 credit_object.credit_amount = available_balance
+                user_object.sell_price = sell_price
                 db.session.commit()
                 shutdown_session()
-            return jsonify({"message": "sell is successfull",
+            return jsonify({"message": "sell is successful",
                             "symbol": symbol,
                             "available_balance": available_balance,
                             "quantity": quantity
