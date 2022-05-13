@@ -171,6 +171,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
   return (
     <div>
+      <div className= "Search">
+      <div>
       <TextField
         id="outlined-full-width"
         label="Label"
@@ -189,8 +191,10 @@ const Item = styled(Paper)(({ theme }) => ({
         }}
         onChange={(e) => setSymbol(e.target.value.toUpperCase())}
       />
+      </div>
 
-      <Button onClick={handleSearch}>Search</Button>
+      <div><Button onClick={handleSearch}>Search</Button></div>
+      </div>
 
       
 
