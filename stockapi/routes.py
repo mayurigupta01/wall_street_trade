@@ -7,6 +7,7 @@ from . import db, app
 from flask import Blueprint, request, jsonify, redirect, url_for, json
 import yfinance as yf
 from stockapi.models import stockinfo, users, credit, user_credits, users_account
+from decimal import Decimal
 
 from stockapi.symbols import Tickers, Summary, Charts, CInsight, Rating, StockSummary
 from bs4 import BeautifulSoup
@@ -56,7 +57,7 @@ def get_google_provider_cfg():
 @stock_api_blueprint.route('/home', methods=['GET'])
 def get_home_page():
     try:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
     except:
         return jsonify({"Message": "Home page is unreachable"}), 400
 
@@ -190,7 +191,7 @@ def get_stock_info():
         except:
             return jsonify({"Message": "Cannot retrieve stock info at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 @stock_api_blueprint.route('/get-stock-summary', methods=['POST'])
@@ -227,7 +228,7 @@ def get_stock_summary():
         except:
             return jsonify({"Message": "Cannot retrieve stock summary at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # trending tickers based on user selection
@@ -254,7 +255,7 @@ def get_trending_ticker():
             return jsonify(
                 {"Message": "Cannot retrieve trending tickers at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get real time current stock price
@@ -273,7 +274,7 @@ def get_stock_price():
         except:
             return jsonify({"Message": "Cannot retrieve current stock price"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get UUId of news
@@ -345,7 +346,7 @@ def get_same_category():
         except:
             return jsonify({"Message": "Cannot retrieve same category stocks at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get charts of the symbol
@@ -364,7 +365,7 @@ def get_charts():
         except:
             return jsonify({"Message": "Cannot retrieve charts at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get insight about a company
@@ -448,6 +449,7 @@ def callback():
 @stock_api_blueprint.route("/current-user")
 def get_current_user():
     user = psqlprovider.get_user(current_user.get_id())
+    print("current user", user)
     return jsonify(user), 200
 
 
@@ -485,7 +487,7 @@ def get_gainers():
         except:
             return jsonify({"Message": "Cannot retrieve top 5 gainers at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get the top 5 losers for the day
@@ -506,7 +508,7 @@ def get_losers():
         except:
             return jsonify({"Message": "Cannot retrieve top 5 losers at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get market open and close times as well as if market is open
@@ -525,7 +527,7 @@ def get_market_hours():
         except:
             return jsonify({"Message": "Cannot retrieve market hours at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get the rating of a stock
@@ -543,7 +545,7 @@ def get_stock_rating():
         except:
             return jsonify({"Message": "Cannot retrieve stock rating at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # get performance metrics of 15 sectors
@@ -562,23 +564,23 @@ def get_sector_performance():
         except:
             return jsonify({"Message": "Cannot retrieve sector performance at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
-# Web scraper to scrape GoScour for top 5 most mentioned stock tickers on Reddit within 24 hour period
-# Inspired by https://realpython.com/beautiful-soup-web-scraper-python/
+# Web scraper for top 5 most mentioned stock tickers on Reddit within 24 hour period
+# https://realpython.com/beautiful-soup-web-scraper-python/
 @stock_api_blueprint.route('/get-reddit-mentions', methods=['GET'])
 def get_reddit_mentions():
     if request.method == 'GET':
         try:
-            url = "https://www.goscour.com/"
+            url = "https://wsbdaily.com/"
             page = requests.get(url)
             soup = BeautifulSoup(page.content, "html.parser")
             mentionedStocks = []
 
-            results = soup.find(id="reddit-stocks-leaderboard")
-            stockSymbol = results.find_all("div", class_="font-medium block")
-            companyName = results.find_all("div", class_="text-text-secondary dark:text-text-primaryDark")
+            results = soup.find(id="___gatsby")
+            stockSymbol = results.find_all("span", class_="css-1sctek8 e1b8pdim9")
+            companyName = results.find_all("span", class_="css-8k7y81 e1b8pdim12")
             # mentionCount = results.find_all("div", class_="px-4 py-4 text-right table-cell align-middle")
 
             for symbols, names, x in zip(stockSymbol, companyName, range(5)):
@@ -587,7 +589,7 @@ def get_reddit_mentions():
         except:
             return jsonify({"Message": "Cannot retrieve Reddit mentions at this time"}), 401
     else:
-        return jsonify({"Message": "Welcome to Wall Street Hero"}), 200
+        return jsonify({"Message": "Welcome to Wall Street Trade"}), 200
 
 
 # user credits backend call
@@ -631,7 +633,9 @@ def add_user_credits():
         if request.method == 'POST':
             request_data = request.get_json()
             user_id = request_data['user_id']
+            print("userid", user_id)
             amount = request_data['amount']
+            print("amount", amount)
             db_object = user_credits.query.filter_by(user_id=user_id).first()
             print(db_object)
             if db_object is None:
@@ -682,6 +686,24 @@ def get_user_credits(user_id):
     except Error as e:
         return {"message": e.message}, 400
 
+
+@stock_api_blueprint.route('/get_all_bought_stocks', methods=['POST'])
+def get_all_bought_stocks():
+    request_data = request.get_json()
+    users_email = request_data['user_email']
+    db_object = users.query.filter_by(email=users_email).first()
+    print("User id", db_object.id)
+    user_details = users_account.query.filter_by(user_id=db_object.id).all()
+    print("users account", len(user_details))
+    stockDetails = []
+    for user_detail in user_details:
+        stockDetails.append({"symbol": user_detail.symbol,
+                            "costBasis": user_detail.cost_basis,
+                             "quantity": user_detail.quantity,
+                             "purchaseDate": user_detail.purchase_date,
+                             "sellDate": user_detail.sell_date
+                             })
+    return json.dumps(stockDetails, indent=4, sort_keys=True, default=str)
 
 # Trading backend calls
 @stock_api_blueprint.route('/buyStock', methods=['POST', 'GET'])
