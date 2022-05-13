@@ -17,7 +17,7 @@ export default function topbar() {
         </div>
         <div className="topRight">
           <div className="searchbar">
-            <Searchbar />
+            {/* <Searchbar /> */}
           </div>
           <div className="searchbar">
             <ShowCredits />

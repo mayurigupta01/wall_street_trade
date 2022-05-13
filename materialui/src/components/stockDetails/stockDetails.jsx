@@ -27,6 +27,7 @@ class StockDetails extends Component {
       };
     fetch(`/get_all_bought_stocks/` + this.user_id, { requestOptions }).then(
         (response) => {
+            console.log("Stock portfolio:", response);
           response.json().then((res) => {
             this.setState({ stocksData: res?res:[] });
           });
