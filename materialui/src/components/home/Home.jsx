@@ -7,7 +7,8 @@ import SectorPerformance from "../sectorPerformance/sectorPerformance";
 import RedditMentions from '../redditMentions/redditMentions';
 import Topbar from '../topbar/topbar';
 import MarketHours from "../marketHours/marketHours";
-import ShowCredits from "../showCredits/showCredits"
+import ShowCredits from "../showCredits/showCredits";
+import StockDetails from "../stockDetails/stockDetails";
 
 export default function Home() {
   return (
@@ -25,7 +26,7 @@ export default function Home() {
       <div className="topNTables">
         <RedditMentions />
         <TrendingTickers />
-        {/* <ShowCredits /> */}
+        <StockDetails /> 
       </div>
     </div>
   );

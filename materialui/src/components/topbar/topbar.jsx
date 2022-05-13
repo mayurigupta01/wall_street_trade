@@ -2,6 +2,7 @@ import React from "react";
 import "./topbar.css";
 import Avatar from '@material-ui/core/Avatar';
 import Searchbar from '../search_bar/SearchBar.jsx'
+import ShowCredits from "../showCredits/showCredits";
 
 export default function topbar() {
   function logout() {
@@ -17,6 +18,9 @@ export default function topbar() {
         <div className="topRight">
           <div className="searchbar">
             <Searchbar />
+          </div>
+          <div className="searchbar">
+            <ShowCredits />
           </div>
             <div className="topbarIconContainer">
               <button className="logoutButton" href="#" onClick={logout}>Logout</button>
