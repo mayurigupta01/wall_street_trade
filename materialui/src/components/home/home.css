@@ -6,16 +6,24 @@
 .topNTables{
     display:flex;
     flex-direction:column;
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
     margin-bottom: 20px;
-    height: 440px;
-    width: 40%;
+    padding: 20px;
+    height: 450px;   
+    width: 30%;
     overflow: auto;
     float: right;
     position: relative;
     margin-left: -5px;
+    align-content: justify;
 }
 
 .container {
     display: flex;
+    padding-right: 15px;
+    /* padding-left: 15px; */
+    margin-right: auto;
+    margin-left: auto;
+    width: 1250px !important;
+    /* margin: 20px !important; */
 }

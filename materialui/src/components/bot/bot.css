@@ -2,3 +2,8 @@
 
     height: 300px !important;
 }
+
+.bot{
+    z-index: 99 !important; 
+    position: absolute;
+}

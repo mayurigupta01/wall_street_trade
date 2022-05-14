@@ -4,7 +4,9 @@ import './bot.css'
 
 class Bot extends Component {
   render() {
-    return (<LexChat
+    return (
+    <div className="bot">
+    <LexChat
       botName="WallStreet"
       IdentityPoolId="us-east-1:a3b5fa16-8d8b-40a8-ae5d-66cad74f136e"
       placeholder="Placeholder text"
@@ -16,7 +18,9 @@ class Bot extends Component {
       greeting={
         "Welcome to WallStreet. How can we help you today?"
       }
-    />);
+    />
+    </div>
+    );
   }
 }
 
