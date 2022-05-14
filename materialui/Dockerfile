@@ -11,7 +11,7 @@ EXPOSE 3000
 COPY package.json /materialui
 
 RUN npm install
-RUN npm install react-scripts@4.0.3 -g
+RUN npm install react-scripts@5.0.1 -g
 
 # add client1
 COPY . /materialui
