@@ -27,7 +27,8 @@ class Losers extends Component {
     let items = [...this.state.losersData];
     if (this.state.losersData.length > 0) {
       return (
-        <div style={{ width: '33%', padding: 20 }}>
+        // <div style={{ width: '60%', padding: 20 }}>
+        <div>
           <span className="featuredTitle">Top Losers</span>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 130 }} aria-label="simple table">

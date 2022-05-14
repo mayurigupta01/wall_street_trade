@@ -9,9 +9,13 @@
     padding-bottom: 20px;
     margin-bottom: 20px;
     height: 440px;
-    width: 25%;
+    width: 40%;
     overflow: auto;
     float: right;
     position: relative;
     margin-left: -5px;
+}
+
+.container {
+    display: flex;
 }

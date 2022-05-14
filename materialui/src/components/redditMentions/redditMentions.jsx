@@ -26,7 +26,8 @@ class RedditMentions extends Component {
     let items = [...this.state.redditMentionsData];
     if (this.state.redditMentionsData.length > 0) {
       return (
-        <div style={{ width: '33%', padding: 20 }}>
+        // <div style={{ width: '60%', padding: 20 }}>
+        <div>
           <span className="featuredTitle">Stock Mentions on Reddit</span>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 130 }} aria-label="simple table">
