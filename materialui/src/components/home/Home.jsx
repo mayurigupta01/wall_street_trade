@@ -43,7 +43,8 @@ export default function Home() {
       <MarketHours />
       <Buy />
       <div className = "container">
-      <StockDetails /> 
+      <StockDetails />
+      {/* </div>  */}
       {/* <News /> */}
       <div className="topNTables">
       <ThemeProvider theme={theme}>
@@ -52,7 +53,7 @@ export default function Home() {
         <SectorPerformance />
         <RedditMentions />
         </ThemeProvider>
-      </div>
+      </div>  
       </div>
       {/* <div className="topNTables">
         <TrendingTickers />

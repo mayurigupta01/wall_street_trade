@@ -99,15 +99,39 @@ const Buy = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(Symbol),
     };
-    fetch("/stock/info", requestOptions).then((response) => {
+    fetch("/stock/info", requestOptions)
+    // .then((response) => {
+      .then(res => {
+        if (!res.ok) { // error coming back from server
+          throw Error('could not fetch the data for that resource');
+        } 
+        return res.json();
+      })
+      .then(data => {
+        setIsPending(false);
+        setAPIData(data);
+        console.log(data);
+        setError(null);
+        setAPIDatabool(true)
+      })
+      .catch(err => {
+        // auto catches network / connection error
+        if(err.name === "AbortError"){
+            console.log("Aborted")
+        }
+        else{
+        setIsPending(false);
+        setError(err.message);
+        }
+      })
       // console.log(respons  e.status);
-      if (response.status === 200) {setAPIDatabool(true);}
-      response.json().then((res) => {
-        console.log(res);
-        setAPIData(res);
+    //   if (response.status === 200) {setAPIDatabool(true);}
+    //   response.json().then((res) => {
+    //     console.log(res);
+    //     setAPIData(res);
 
-      });
-    });
+    //   });
+    // });
     const request = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -238,7 +262,7 @@ const Buy = () => {
                     <strong>Volume:</strong> {apidata.Volume}
                   </Item>
                 </Grid>
-                {/* <div className ="buybuttons"></div> */}
+                <div className ="buybuttons"></div>
                 <Grid item xs={3}>
                 <Item>
                 <button
@@ -251,7 +275,7 @@ const Buy = () => {
                 </Item>
                 </Grid>
                 
-                <Grid item xs={3}>
+                <Grid   item xs={3}>
                 <Item>
 
                 <button
