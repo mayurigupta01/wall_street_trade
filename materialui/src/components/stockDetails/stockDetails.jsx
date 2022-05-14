@@ -40,7 +40,7 @@ class StockDetails extends Component {
     let items = [...this.state.stocksData];
     if (this.state.stocksData.length > 0) {
         return (
-        <div style={{ height: 450, width: '40%', padding: 20 }}>
+        <div style={{ height: 450, width: '70%', padding: 20 }}>
             <span className="featuredTitle">Portfolio</span>
             <TableContainer component={Paper}>
             <Table sx={{ minWidth: 130 }} aria-label="simple table">
@@ -66,7 +66,7 @@ class StockDetails extends Component {
                         {item.symbol}
                     </TableCell>
                     <TableCell style={{fontSize: '12px'}}>
-                        {item.costBasis}
+                        ${item.costBasis}
                     </TableCell>
                     <TableCell style={{fontSize: '12px'}}>
                         {item.quantity}
@@ -78,13 +78,13 @@ class StockDetails extends Component {
                         {item.sellDate}
                     </TableCell>
                     <TableCell style={{fontSize: '12px'}}>
-                        {item.sellPrice}
+                        {item.sellPrice == null? "":"$"+item.sellPrice}
                     </TableCell>
                     <TableCell style={{fontSize: '12px'}}>
-                        {item.totalGain}
+                        {item.totalGain == null? "":"$"+item.totalGain}
                     </TableCell>
                     <TableCell style={{fontSize: '12px'}}>
-                        {item.totalLoss}
+                        {item.totalLoss == null? "":"$"+item.totalLoss}
                     </TableCell>
                     </TableRow>
                 ))}
