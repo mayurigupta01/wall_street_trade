@@ -8,7 +8,8 @@ Simulated Trading Platform with paper money.
 
 # Architecture Diagram - Cloud Architecture
 
-<img width="993" alt="Screen Shot 2022-05-15 at 2 42 25 PM" src="https://user-images.githubusercontent.com/89235391/168495068-754564d5-03d3-40e5-9ff8-205e4ababb7b.png">
+
+<img width="967" alt="Screen Shot 2022-05-15 at 3 02 11 PM" src="https://user-images.githubusercontent.com/89235391/168495702-f986305a-0022-4b5b-9f41-bbaa1a4ae7dd.png">
 
 # Google single Sign on Feature 
 
