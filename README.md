@@ -64,5 +64,24 @@ Simulated Trading Platform with paper money.
   
 <img width="1132" alt="Screen Shot 2022-05-15 at 3 00 50 PM" src="https://user-images.githubusercontent.com/89235391/168495650-ba0ee86d-f0bd-4204-8cd0-e3b1abd8b4a7.png">
 
+# PostMan Collection
+https://www.getpostman.com/collections/b4eadc53bed0dd5f237f
+
+<img width="725" alt="Screen Shot 2022-05-15 at 3 31 26 PM" src="https://user-images.githubusercontent.com/89235391/168496648-4bc89280-b065-4e3f-9770-b802d33af214.png">
 
 
+<img width="746" alt="Screen Shot 2022-05-15 at 3 31 40 PM" src="https://user-images.githubusercontent.com/89235391/168496651-61904ce8-0c6b-4d8f-89d7-6466853df50f.png">
+
+
+<img width="998" alt="Screen Shot 2022-05-15 at 3 31 52 PM" src="https://user-images.githubusercontent.com/89235391/168496657-d4590709-a6d1-4689-9194-b6c113ed0520.png">
+
+<img width="789" alt="Screen Shot 2022-05-15 at 3 32 05 PM" src="https://user-images.githubusercontent.com/89235391/168496663-0f6cf1f4-bd17-4277-9fa9-6dc49c932862.png">
+
+<img width="862" alt="Screen Shot 2022-05-15 at 3 32 14 PM" src="https://user-images.githubusercontent.com/89235391/168496668-88aa3b53-c265-4cc8-b9f2-b806fd14be30.png">
+
+<img width="982" alt="Screen Shot 2022-05-15 at 3 32 50 PM" src="https://user-images.githubusercontent.com/89235391/168496689-80d8ac4a-8d5c-44a5-9eb2-dc827db3f083.png">
+
+<img width="842" alt="Screen Shot 2022-05-15 at 3 33 03 PM" src="https://user-images.githubusercontent.com/89235391/168496700-0a26801a-5ca8-4efe-8e57-f8590e6e73fc.png">
+
+
+<img width="905" alt="Screen Shot 2022-05-15 at 3 33 14 PM" src="https://user-images.githubusercontent.com/89235391/168496710-9326896b-5eaa-4fbd-a210-324f86b886cd.png">
