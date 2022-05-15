@@ -53,7 +53,7 @@ Simulated Trading Platform with paper money.
 
 <img width="973" alt="Screen Shot 2022-05-15 at 2 59 37 PM" src="https://user-images.githubusercontent.com/89235391/168495624-811ff3e0-4139-4a7f-8d03-3e01c055c76c.png">
 
- **Healthy targets **
+ # Healthy targets 
 <img width="1133" alt="Screen Shot 2022-05-15 at 3 03 54 PM" src="https://user-images.githubusercontent.com/89235391/168495749-db04328b-08d9-461b-83a5-755cae55671a.png">
 
   # Auto Scaling Groups
