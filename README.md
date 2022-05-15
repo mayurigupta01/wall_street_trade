@@ -85,3 +85,19 @@ https://www.getpostman.com/collections/b4eadc53bed0dd5f237f
 
 
 <img width="905" alt="Screen Shot 2022-05-15 at 3 33 14 PM" src="https://user-images.githubusercontent.com/89235391/168496710-9326896b-5eaa-4fbd-a210-324f86b886cd.png">
+
+# Terraform : Infrastructure as a code.
+
+<img width="1370" alt="Screen Shot 2022-05-15 at 3 37 13 PM" src="https://user-images.githubusercontent.com/89235391/168496828-e8f4cdac-291f-49c6-a163-ef5d483d32ba.png">
+
+<img width="976" alt="Screen Shot 2022-05-15 at 3 35 55 PM" src="https://user-images.githubusercontent.com/89235391/168496791-969fac91-9dd2-47c2-8484-9032b8310b68.png">
+
+<img width="981" alt="Screen Shot 2022-05-15 at 3 36 10 PM" src="https://user-images.githubusercontent.com/89235391/168496798-affc445c-c7c5-4f64-a46f-f51982ffc22d.png">
+
+<img width="1149" alt="Screen Shot 2022-05-15 at 3 36 18 PM" src="https://user-images.githubusercontent.com/89235391/168496803-cca08944-1c2f-4997-8be6-016c66627f4d.png">
+
+<img width="883" alt="Screen Shot 2022-05-15 at 3 36 28 PM" src="https://user-images.githubusercontent.com/89235391/168496808-67008827-17ce-4395-b35e-941762bf7442.png">
+
+<img width="852" alt="Screen Shot 2022-05-15 at 3 36 47 PM" src="https://user-images.githubusercontent.com/89235391/168496817-cb2799fe-c95c-463d-b564-6d8372f4a915.png">
+
+
