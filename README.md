@@ -41,7 +41,9 @@ Simulated Trading Platform with paper money.
 
 # AWS Resources
    # EC2 Instances.
-<img width="1204" alt="Screen Shot 2022-05-15 at 2 57 17 PM" src="https://user-images.githubusercontent.com/89235391/168495541-a59c4412-98ed-4e97-8972-       062ff897165e.png">
+   
+   
+<img width="1196" alt="Screen Shot 2022-05-15 at 3 03 27 PM" src="https://user-images.githubusercontent.com/89235391/168495737-1be61eea-a158-4fe5-bd08-c9550f3a3c93.png">
 
    # Load Balancers
 
@@ -51,6 +53,9 @@ Simulated Trading Platform with paper money.
 
 <img width="973" alt="Screen Shot 2022-05-15 at 2 59 37 PM" src="https://user-images.githubusercontent.com/89235391/168495624-811ff3e0-4139-4a7f-8d03-3e01c055c76c.png">
 
+ **Healthy targets **
+<img width="1133" alt="Screen Shot 2022-05-15 at 3 03 54 PM" src="https://user-images.githubusercontent.com/89235391/168495749-db04328b-08d9-461b-83a5-755cae55671a.png">
+
   # Auto Scaling Groups
   
   <img width="1107" alt="Screen Shot 2022-05-15 at 3 00 16 PM" src="https://user-images.githubusercontent.com/89235391/168495639-f3f51c48-2383-4080-bc16-7521e842d309.png">
@@ -58,5 +63,6 @@ Simulated Trading Platform with paper money.
   # Launch Templates
   
 <img width="1132" alt="Screen Shot 2022-05-15 at 3 00 50 PM" src="https://user-images.githubusercontent.com/89235391/168495650-ba0ee86d-f0bd-4204-8cd0-e3b1abd8b4a7.png">
+
 
 
