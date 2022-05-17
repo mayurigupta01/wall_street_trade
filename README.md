@@ -147,6 +147,8 @@ In the home page, the user would be able to get the information about market hou
 # Get Trending Tickers:
 In the home page, the user would be able to see the list of top 5 trending tickers which includes the details of Stock symbol and Company name.
 
+# FRONT END DEPLOYMENT:
+Front end has been deployed to Cloud Front and the deployed url is: 
 
-
+# Demo Video Link:
 
