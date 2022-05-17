@@ -24,11 +24,6 @@ from stockapi.jwt_helper import encode_jwt_token
 from stockapi.user import User
 import requests
 
-# Configuration
-GOOGLE_CLIENT_ID = Config.GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET = Config.GOOGLE_CLIENT_SECRET
-GOOGLE_DISCOVERY_URL = Config.GOOGLE_DISCOVERY_URL
-
 # User session management setup
 # https://flask-login.readthedocs.io/en/latest
 login_manager = LoginManager()
