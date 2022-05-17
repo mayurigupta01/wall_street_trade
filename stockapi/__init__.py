@@ -22,10 +22,10 @@ with app.app_context():
     app.register_blueprint(stock_api_blueprint)
 
 # DB
-user = 'postgres'
-passw = 'StrongPassword'
-dbname = 'wall_street'
-dbhost = 'postgres.buildyourownmind.com'
+user = ''
+passw = ''
+dbname = ''
+dbhost = ''
 app.config[
     'SQLALCHEMY_DATABASE_URI'] = \
     'postgresql://' + user + ':' + passw + '@' + dbhost + '/' + dbname
