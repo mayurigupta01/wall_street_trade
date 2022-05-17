@@ -156,5 +156,5 @@ In the home page, the user would be able to see the list of top 5 trending ticke
 # FRONT END DEPLOYMENT:
 Front end has been deployed to Cloud Front and the deployed url is: 
 
-# Demo Video Link:
-![video](https://github.com/mayurigupta01/wall_street_trade/blob/c4dc5ceed803f98aba20ce6627a0c0a361da499a/materialui/Wall%20Street%20Trade%20-%20Personal%20-%20Microsoft_%20Edge%202022-05-15%2014-19-31%20(1).mp4)
+# Demo Video Link: [Video](https://github.com/mayurigupta01/wall_street_trade/blob/c4dc5ceed803f98aba20ce6627a0c0a361da499a/materialui/Wall%20Street%20Trade%20-%20Personal%20-%20Microsoft_%20Edge%202022-05-15%2014-19-31%20(1).mp4)
+
