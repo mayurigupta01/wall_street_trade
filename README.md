@@ -10,38 +10,36 @@ Simulated Trading Platform with paper money.
 
 <img width="967" alt="Screen Shot 2022-05-15 at 3 02 11 PM" src="https://user-images.githubusercontent.com/89235391/168495702-f986305a-0022-4b5b-9f41-bbaa1a4ae7dd.png">
 
-# Google single Sign on Feature 
-
 # TECH STACK
-JavaScript (Frontend)
-React/Redux (Frontend)
-Python (Backend)
-Flask (Backend)
-SQL/PSQL (Postgres DB)
-Jenkins (CI/CD) - Automate deployment
-Hashicorp Terraform (IaC)
-Docker (Containerization) 
-Github (SCM) 
+JavaScript (Frontend),
+React/Redux (Frontend),
+Python (Backend),
+Flask (Backend),
+SQL/PSQL (Postgres DB),
+Jenkins (CI/CD) - Automate deployment,
+Hashicorp Terraform (IaC),
+Docker (Containerization),
+Github (SCM),
 Integration with Yahoo Finance API 
 
 # CLOUD STACK
-AWS VPC
-AWS RDS
-AWS EC2
-Auto Scaling Group
-AWS Launch Template
-AWS NAT Gateway
-AWS Internet Gateway
-AWS Route Tables
-AWS ALB
-AWS ACM
-AWS Security Groups
-AWS Subnets
-CloudWatch
-R53
-Amazon AMI
-AWS Lambda functions
-API gateway 	
+AWS VPC,
+AWS RDS,
+AWS EC2, 
+Auto Scaling Group,
+AWS Launch Template,
+AWS NAT Gateway,
+AWS Internet Gateway,
+AWS Route Tables,
+AWS ALB,
+AWS ACM,
+AWS Security Groups,
+AWS Subnets,
+CloudWatch,
+R53,
+Amazon AMI,
+AWS Lambda functions,
+API gateway,
 Amazon Lex - Chat Bot
 
 # Container Technology 
