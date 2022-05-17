@@ -101,6 +101,12 @@ https://www.getpostman.com/collections/b4eadc53bed0dd5f237f
 <img width="852" alt="Screen Shot 2022-05-15 at 3 36 47 PM" src="https://user-images.githubusercontent.com/89235391/168496817-cb2799fe-c95c-463d-b564-6d8372f4a915.png">
 
 # FRONT END - WIREFRAMES
+![image](https://user-images.githubusercontent.com/91353971/168736506-f55645d3-188d-4006-8d6a-d0efe4726935.png)
+![image](https://user-images.githubusercontent.com/91353971/168736514-a02b01f1-7213-42ca-afeb-83760c0714cc.png)
+![image](https://user-images.githubusercontent.com/91353971/168736526-0d32cb4b-e8e2-43b9-9d1a-3750ab0ff39e.png)
+![image](https://user-images.githubusercontent.com/91353971/168736535-ea9540a5-8bc8-44fd-8e3c-6581395b0804.png)
+![image](https://user-images.githubusercontent.com/91353971/168736542-7e604b30-4a7e-4407-9c9c-69912e8a4013.png)
+
 
 # FEATURE SET:
 # Custom login & SSO (Google):
@@ -151,4 +157,4 @@ In the home page, the user would be able to see the list of top 5 trending ticke
 Front end has been deployed to Cloud Front and the deployed url is: 
 
 # Demo Video Link:
-
+![video](https://github.com/mayurigupta01/wall_street_trade/blob/c4dc5ceed803f98aba20ce6627a0c0a361da499a/materialui/Wall%20Street%20Trade%20-%20Personal%20-%20Microsoft_%20Edge%202022-05-15%2014-19-31%20(1).mp4)
