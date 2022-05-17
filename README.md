@@ -100,4 +100,53 @@ https://www.getpostman.com/collections/b4eadc53bed0dd5f237f
 
 <img width="852" alt="Screen Shot 2022-05-15 at 3 36 47 PM" src="https://user-images.githubusercontent.com/89235391/168496817-cb2799fe-c95c-463d-b564-6d8372f4a915.png">
 
+# FRONT END - WIREFRAMES
+
+# FEATURE SET:
+# Custom login & SSO (Google):
+The first time user would be able to register by clicking on "Sign Up" button.
+The user would be provided with two options to login either through custom login or through Google SSO(Single Sign On). 
+
+# Buy stock and add to portfolio:
+On entering the name of the stock in the search box, the user would be able to search for the stock, get details about the stock which includes its industry, recommendation,Today's high, High, Low, 52 Week High, 52 Week Low, Market Cap, Volume. On clicking the "Buy" button in the details page, the user would be provided with a pop up mentioning details about the Stock, Symbol, Price, Credits, Total Price where the user can select the Share Quantity to buy and click on "BUY" button to buy the stock. The details of the bought stock would be added to the user's portfolio to be viewed by the user anytime later.
+ 
+ 
+# Sell stock:
+On entering the name of the stock in the search box, the user would be able to search for the stock, get details about the stock which includes its industry, recommendation,Today's high, High, Low, 52 Week High, 52 Week Low, Market Cap, Volume. On clicking the "Sell" button in the details page, the user would be provided with a pop up mentioning details about the Stock, Symbol, Price, Credits, Total Price where the user can select the Share Quantity to sell and click on "SELL" button to sell the stock. The details of the sold stock would be added to the user's portfolio to be viewed by the user anytime later.
+
+# View portfolio:
+The existing user would be able to view the stocks portfolio in the home page which contains the details of the stocks bought and sold, Cost Basis of the stocks, Quantity Purchased, Purchase Date, Sell Date, Sell Price and the Total Gain or Total Loss percentage from selling the stocks. 
+
+The new user would not be able to see the portfolio as the user wouldn't have bought or sold any stocks.
+
+# Add / Update user credits:
+
+On Clicking the "CREDITS" button in the header, the user would be able to see the available credit balance and Select the credits to be added (if the available balance is zero) / Select the credits to be updated (if the available balance is greater than zero). Credits would be in the range from $100 - $5000. Add/ Update button would be displayed accordingly which the user can select to add/update credits to his/her account and the change would be immediately reflected in the available credit balance section.
+
+# Get Top Gainers:
+In the home page, the user would be able to see the list of top 5 gainers. Top gainers list includes the details of stock, price, change value and the gain percentage.
+
+# Get Top Losers:
+In the home page, the user would be able to see the list of top 5 losers. Top losers list includes the details of stock, price, change value and the loss percentage.
+
+# Get stock mentions on Reddit:
+In the home page, the user would be able to see the list of top 5 stock mentions on Reddit. The list includes the details of stock symbol, company and the mentions (in 24 Hrs).
+
+# Get stock information:
+On entering the name of the stock in the search box, the user would be able to get the stock information. Stock information includes its industry, recommendation,Today's high, High, Low, 52 Week High, 52 Week Low, Market Cap and Volume.
+
+# Get real time stock price (Amazon Lex):
+The user would also be able to view the real time stock price through Chat Bot(Amazon Lex) which is available on the home page.
+
+# Get Sector Performance:
+In the home page, the user would be able to see the sector performance of top 5 sectors which includes the details of sector and its change value.
+
+# Get Market Hours:
+In the home page, the user would be able to get the information about market hours of New York Stock Exchange.
+
+# Get Trending Tickers:
+In the home page, the user would be able to see the list of top 5 trending tickers which includes the details of Stock symbol and Company name.
+
+
+
 
